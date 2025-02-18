@@ -26,24 +26,30 @@ if 'alerts_settings' not in st.session_state:
 
 def save_current_settings():
     """Save current input values as default settings"""
-    current_settings = {
-        'spreadsheet_id': st.session_state.spreadsheet_id,
-        'sheet_name': st.session_state.sheet_name,
-        'start_col': st.session_state.start_col,
-        'end_col': st.session_state.end_col,
-        'start_row': st.session_state.start_row,
-        'end_row': st.session_state.end_row,
-        'sort_by': st.session_state.get('sort_by', ""),
-        'sort_ascending': st.session_state.get('sort_ascending', True),
-        'selected_columns': st.session_state.get('column_selector', []),
-        'filters': st.session_state.get('current_filters', {}),
-    }
+    try:
+        current_settings = {
+            'spreadsheet_id': st.session_state.spreadsheet_id,
+            'sheet_name': st.session_state.sheet_name,
+            'start_col': st.session_state.start_col,
+            'end_col': st.session_state.end_col,
+            'start_row': st.session_state.start_row,
+            'end_row': st.session_state.end_row,
+            'sort_by': st.session_state.get('sort_by', ""),
+            'sort_ascending': st.session_state.get('sort_ascending', True),
+            'selected_columns': st.session_state.get('column_selector', []),
+            'filters': st.session_state.get('current_filters', {})
+        }
 
-    st.session_state.alerts_settings.update(current_settings)
-    if save_settings(st.session_state.alerts_settings, "alerts"):
-        st.success("Settings saved successfully!")
-    else:
-        st.error("Failed to save settings")
+        st.session_state.alerts_settings = current_settings
+        if save_settings(current_settings, 'alerts'):
+            st.success("Settings saved successfully!")
+            return True
+        else:
+            st.error("Failed to save settings")
+            return False
+    except Exception as e:
+        st.error(f"Error saving settings: {str(e)}")
+        return False
 
 def display_alerts_page():
     # Add navigation at the top
@@ -54,7 +60,7 @@ def display_alerts_page():
     with col1:
         st.title("Market Alerts")
     with col2:
-        if st.button("🔄 Refresh Data"):
+        if st.button("🔄 Refresh Data", key="refresh_alerts"):
             st.cache_data.clear()
             st.success("Data cache cleared! Loading fresh data...")
     with col3:
