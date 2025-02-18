@@ -12,18 +12,22 @@ st.set_page_config(
 
 def main():
     st.title("📊 Google Sheets Data Viewer")
-    
+
     # Sidebar for sheet configuration
     st.sidebar.header("Sheet Configuration")
     spreadsheet_id = st.sidebar.text_input(
         "Spreadsheet ID",
+        value="116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
         help="Enter the ID from your Google Sheets URL"
     )
-    range_name = st.sidebar.text_input(
-        "Sheet Range",
-        "Sheet1!A1:Z1000",
-        help="Enter the range in A1 notation"
+    sheet_name = st.sidebar.text_input(
+        "Sheet Name",
+        value="Sheet1",
+        help="Enter the name of the sheet (e.g., Sheet1)"
     )
+
+    # Create range with proper format
+    range_name = f"'{sheet_name}'" # Enclose sheet name in quotes for safety
 
     # Manual refresh button
     if st.sidebar.button("🔄 Refresh Data"):
@@ -31,31 +35,31 @@ def main():
         st.success("Data cache cleared! Loading fresh data...")
 
     # Load data
-    if spreadsheet_id and range_name:
+    if spreadsheet_id and sheet_name:
         with st.spinner("Loading data..."):
             df = load_sheet_data(spreadsheet_id, range_name)
-            
+
         if df is not None:
             st.success("Data loaded successfully!")
-            
+
             # Column selection
             st.subheader("Column Visibility")
             selected_columns = column_selector(df)
-            
+
             # Filtering and sorting
             st.subheader("Data Controls")
             filters = render_filters(df)
             sort_by, ascending = render_sort_controls(df)
-            
+
             # Apply operations
             filtered_df = filter_dataframe(df, filters)
             if sort_by:
                 filtered_df = sort_dataframe(filtered_df, sort_by, ascending)
-            
+
             # Display data
             st.subheader("Data View")
             render_data_table(filtered_df, selected_columns)
-            
+
             # Display data info
             st.sidebar.markdown("---")
             st.sidebar.subheader("Data Info")
@@ -65,7 +69,7 @@ def main():
                 - Filtered Rows: {len(filtered_df)}
             """)
     else:
-        st.info("Please enter a Spreadsheet ID and range to begin.")
+        st.info("Please enter a Spreadsheet ID and sheet name to begin.")
 
 if __name__ == "__main__":
     main()

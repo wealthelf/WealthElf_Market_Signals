@@ -38,7 +38,7 @@ def get_sample_data():
     return pd.DataFrame(data)
 
 @st.cache_data(ttl=300)  # Cache for 5 minutes
-def load_sheet_data(spreadsheet_id, range_name):
+def load_sheet_data(spreadsheet_id, sheet_name):
     """Load data from Google Sheets with caching."""
     try:
         service = create_google_service()
@@ -46,9 +46,31 @@ def load_sheet_data(spreadsheet_id, range_name):
             st.error("Failed to create Google Sheets service. Using sample data.")
             return get_sample_data()
 
+        # First, get the sheet metadata to determine the range
+        try:
+            sheet_metadata = service.spreadsheets().get(
+                spreadsheetId=spreadsheet_id
+            ).execute()
+
+            # Find the specified sheet
+            sheet_found = False
+            for sheet in sheet_metadata.get('sheets', []):
+                if sheet['properties']['title'] == sheet_name.strip("'"):
+                    sheet_found = True
+                    break
+
+            if not sheet_found:
+                st.error(f"Sheet '{sheet_name}' not found. Using sample data.")
+                return get_sample_data()
+
+        except Exception as e:
+            st.error(f"Failed to get sheet metadata: {str(e)}")
+            return get_sample_data()
+
+        # Get the data with the proper range format
         result = service.spreadsheets().values().get(
             spreadsheetId=spreadsheet_id,
-            range=range_name
+            range=sheet_name
         ).execute()
 
         values = result.get('values', [])
