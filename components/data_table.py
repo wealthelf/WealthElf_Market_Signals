@@ -14,6 +14,22 @@ def apply_conditional_formatting(df):
             elif any(indicator in val_str for indicator in ["Slope Down", "Bearish"]):
                 return 'color: white; background-color: red'
 
+            # Special handling for Quad columns
+            if "Quad for" in column_name:
+                try:
+                    quad_value = int(float(val))  # Convert to integer
+                    if quad_value == 1:
+                        return 'color: white; background-color: green'
+                    elif quad_value == 2:
+                        return 'color: white; background-color: #FFD700'  # Yellow
+                    elif quad_value == 3:
+                        return 'color: white; background-color: #FFA500'  # Orange
+                    elif quad_value == 4:
+                        return 'color: white; background-color: red'
+                except (ValueError, TypeError):
+                    return ''
+                return ''
+
             # Skip numeric coloring for columns with "Quad" in their name
             if "Quad" in column_name:
                 return ''
