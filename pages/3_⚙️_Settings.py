@@ -78,21 +78,32 @@ def display_settings_page():
 
     # Save Settings Button
     if st.button("💾 Save Settings", type="primary"):
-        # Update Alerts settings with new values
-        new_alerts_settings = alerts_settings.copy()
-        new_alerts_settings.update({
+        # Create new settings dictionaries
+        new_alerts_settings = {
+            'spreadsheet_id': alerts_settings.get('spreadsheet_id'),
             'sheet_name': alerts_sheet,
             'start_col': alerts_start_col,
-            'end_col': alerts_end_col
-        })
+            'end_col': alerts_end_col,
+            'start_row': alerts_settings.get('start_row', 1),
+            'end_row': alerts_settings.get('end_row', 1000),
+            'sort_by': alerts_settings.get('sort_by', ""),
+            'sort_ascending': alerts_settings.get('sort_ascending', True),
+            'selected_columns': alerts_settings.get('selected_columns', []),
+            'filters': alerts_settings.get('filters', {})
+        }
 
-        # Update Signals settings with new values
-        new_signals_settings = signals_settings.copy()
-        new_signals_settings.update({
+        new_signals_settings = {
+            'spreadsheet_id': signals_settings.get('spreadsheet_id'),
             'sheet_name': signals_sheet,
             'start_col': signals_start_col,
-            'end_col': signals_end_col
-        })
+            'end_col': signals_end_col,
+            'start_row': signals_settings.get('start_row', 1),
+            'end_row': signals_settings.get('end_row', 1000),
+            'sort_by': signals_settings.get('sort_by', ""),
+            'sort_ascending': signals_settings.get('sort_ascending', True),
+            'selected_columns': signals_settings.get('selected_columns', []),
+            'filters': signals_settings.get('filters', {})
+        }
 
         # Save both settings
         alerts_saved = save_settings(new_alerts_settings, 'alerts')
@@ -103,6 +114,8 @@ def display_settings_page():
             st.session_state.alerts_settings = new_alerts_settings
             st.session_state.signals_settings = new_signals_settings
             st.success("Settings saved successfully!")
+            # Prevent automatic navigation by not rerunning the script
+            st.experimental_rerun()
         else:
             st.error("Failed to save settings")
 
