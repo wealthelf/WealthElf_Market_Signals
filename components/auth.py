@@ -10,7 +10,11 @@ def render_login_form():
         st.sidebar.write(f"Logged in as: {st.session_state.username}")
         if st.sidebar.button("Logout"):
             logout_user()
-            st.rerun()
+            # Clear any page-specific state
+            for key in list(st.session_state.keys()):
+                if key not in ['auth_state']:
+                    del st.session_state[key]
+            st.switch_page("app.py")  # Redirect to landing page
         return True
 
     # Initialize session state for auth flow
@@ -44,6 +48,8 @@ def render_login_form():
                     if success:
                         st.session_state.user_id = user_id
                         st.session_state.username = username
+                        # Initialize settings after successful login
+                        st.session_state.settings_initialized = False
                         st.success("Successfully logged in!")
                         st.rerun()
                     else:

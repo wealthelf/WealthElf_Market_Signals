@@ -10,8 +10,13 @@ st.set_page_config(
     layout="wide"
 )
 
-# Initialize global settings on app start
-if 'settings_initialized' not in st.session_state:
+# Initialize session state for authentication if not present
+if 'user_id' not in st.session_state:
+    st.session_state.user_id = None
+    st.session_state.username = None
+
+# Initialize global settings on app start or after login
+if not st.session_state.get('settings_initialized', False) and st.session_state.get('user_id'):
     st.session_state.alerts_settings = load_settings('alerts')
     st.session_state.signals_settings = load_settings('signals')
     st.session_state.settings_initialized = True

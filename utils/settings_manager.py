@@ -47,14 +47,13 @@ def load_settings(page: str = "") -> Dict[str, Any]:
     defaults = get_default_settings(page)
 
     if not st.session_state.get('user_id'):
-        st.warning("Please log in to access your settings.")
         return defaults
 
     conn = get_db_connection()
     try:
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT settings::json
+            SELECT settings
             FROM user_preferences
             WHERE user_id = %s AND page = %s
         """, (st.session_state.user_id, page))
