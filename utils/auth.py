@@ -156,11 +156,11 @@ def reset_password(token: str, new_password: str) -> bool:
 
 def is_logged_in() -> bool:
     """Check if a user is currently logged in."""
-    return 'user_id' in st.session_state
+    return bool(st.session_state.get('user_id')) and bool(st.session_state.get('username'))
 
 def logout_user():
     """Log out the current user."""
-    if 'user_id' in st.session_state:
-        del st.session_state['user_id']
-    if 'username' in st.session_state:
-        del st.session_state['username']
+    # Clear all session state
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.session_state.auth_state = 'login'  # Reset to login state

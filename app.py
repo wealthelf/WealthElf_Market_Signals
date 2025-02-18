@@ -10,27 +10,11 @@ st.set_page_config(
     layout="wide"
 )
 
-# Force clean session state on app startup
-if 'force_reauth' not in st.session_state:
-    # Clear any existing auth state
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
-    st.session_state.force_reauth = True
-
-# Initialize session state for authentication
-if 'user_id' not in st.session_state:
-    st.session_state.user_id = None
-if 'username' not in st.session_state:
-    st.session_state.username = None
+# Initialize authentication state
 if 'auth_state' not in st.session_state:
     st.session_state.auth_state = 'login'
-
-# Initialize global settings on app start or after login
-if not st.session_state.get('settings_initialized', False) and st.session_state.get('user_id'):
-    st.session_state.alerts_settings = load_settings('alerts')
-    st.session_state.signals_settings = load_settings('signals')
-    st.session_state.settings_initialized = True
-    st.session_state.current_page = None
+    st.session_state.user_id = None
+    st.session_state.username = None
 
 # App header with logo and title
 col1, col2 = st.columns([1, 4])
@@ -45,6 +29,12 @@ st.markdown("---")
 is_authenticated = render_login_form()
 
 if is_authenticated:
+    # Initialize global settings after login
+    if not st.session_state.get('settings_initialized', False):
+        st.session_state.alerts_settings = load_settings('alerts')
+        st.session_state.signals_settings = load_settings('signals')
+        st.session_state.settings_initialized = True
+
     # Render navigation
     render_navigation()
 
