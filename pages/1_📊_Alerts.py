@@ -7,8 +7,21 @@ from components.filters import render_filters, render_sort_controls
 
 # Initialize session state for persistent settings
 if 'alerts_settings' not in st.session_state:
-    settings = load_settings()
-    st.session_state.alerts_settings = settings
+    st.session_state.alerts_settings = load_settings('alerts')
+    if not st.session_state.alerts_settings:
+        # Set default values if no settings are loaded
+        st.session_state.alerts_settings = {
+            'spreadsheet_id': "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
+            'sheet_name': "Sheet1",
+            'start_col': "A",
+            'end_col': "Z",
+            'start_row': 1,
+            'end_row': 1000,
+            'sort_by': "",
+            'sort_ascending': True,
+            'selected_columns': [],
+            'filters': {}
+        }
 
 def save_current_settings():
     """Save current input values as default settings"""
