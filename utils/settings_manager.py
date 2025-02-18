@@ -31,9 +31,9 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
     elif page == 'signals':
         return {
             **base_settings,
-            'sheet_name': 'Dashboard-ETFs-Sort',
+            'sheet_name': 'SIGNALS',  # Updated sheet name
             'start_col': 'A',
-            'end_col': 'AW'  # Fixed end column for Signals
+            'end_col': 'U'  # Updated end column for Signals
         }
 
     return base_settings

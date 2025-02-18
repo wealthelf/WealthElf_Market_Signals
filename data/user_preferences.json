@@ -21,26 +21,97 @@
   },
   "alerts": {
     "spreadsheet_id": "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
-    "start_col": "A",
-    "end_col": "Z",
     "start_row": 1,
     "end_row": 1000,
-    "sort_by": "",
-    "sort_ascending": true,
-    "selected_columns": [],
-    "filters": {},
-    "sheet_name": "ALERTS"
+    "sort_by": "Date",
+    "sort_ascending": false,
+    "selected_columns": [
+      "Ticker",
+      "Name",
+      "Description",
+      "Date",
+      "Time",
+      "Latest TPI",
+      "TPI Ticker",
+      "Date and Time",
+      "",
+      "Latest TPI ETFS",
+      "Latest TPI Crypto",
+      "Latest TPI US Close",
+      "Latest TPI Stocks Close",
+      "Date1",
+      "Date2",
+      "28/01/2025"
+    ],
+    "filters": {
+      "Ticker": "",
+      "Name": [],
+      "Description": [],
+      "Date": "",
+      "Time": [],
+      "Latest TPI": "",
+      "TPI Ticker": "",
+      "Date and Time": "",
+      "": [
+        NaN,
+        NaN
+      ],
+      "Latest TPI ETFS": [
+        -100.0,
+        100.0
+      ],
+      "Latest TPI Crypto": [
+        -95.0,
+        52.0
+      ],
+      "Latest TPI US Close": [
+        -100.0,
+        100.0
+      ],
+      "Latest TPI Stocks Close": [
+        -62.0,
+        100.0
+      ],
+      "Date1": "",
+      "Date2": "",
+      "28/01/2025": []
+    },
+    "sheet_name": "ALERTS",
+    "start_col": "A",
+    "end_col": "D"
   },
   "signals": {
     "spreadsheet_id": "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
-    "start_col": "A",
-    "end_col": "Z",
     "start_row": 1,
     "end_row": 1000,
     "sort_by": "",
     "sort_ascending": true,
-    "selected_columns": [],
-    "filters": {},
-    "sheet_name": "Dashboard-ETFs-Sort"
+    "selected_columns": [
+      "17/02/2025",
+      "47 - TPI Slope",
+      "Current Signal",
+      "TPI",
+      "Last Signal Rank - Overall",
+      "Last TPI Flip",
+      "Before Last TPI Flip",
+      "1M Momentum",
+      "Quad Territory",
+      "Quad for Last Qtr",
+      "Quad for this Qtr",
+      "Quad for next Qtr",
+      "Quad for Qtr +2",
+      "Quad for Quarter +3",
+      "TPI Slope",
+      "TPI MA"
+    ],
+    "filters": {
+      "Ticker": "",
+      "Name": [],
+      "Description": [],
+      "Date": ""
+    },
+    "sheet_name": "Dashboard-ETFs-Sort",
+    "start_col": "A",
+    "end_col": "AW"
   }
 }
