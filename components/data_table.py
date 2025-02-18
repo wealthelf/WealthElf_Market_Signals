@@ -5,13 +5,13 @@ def apply_conditional_formatting(df):
     """Apply conditional formatting to the DataFrame."""
     def color_value(val, column_name):
         try:
-            # Convert to string for "Slope" text check
+            # Convert to string for text checks
             val_str = str(val)
 
-            # Check for "Slope" text first
-            if "Slope Up" in val_str:
+            # Check for text indicators first
+            if any(indicator in val_str for indicator in ["Slope Up", "Bullish"]):
                 return 'color: white; background-color: green'
-            elif "Slope Down" in val_str:
+            elif any(indicator in val_str for indicator in ["Slope Down", "Bearish"]):
                 return 'color: white; background-color: red'
 
             # Skip numeric coloring for columns with "Quad" in their name
