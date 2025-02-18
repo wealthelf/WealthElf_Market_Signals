@@ -17,7 +17,11 @@ def load_settings(page: str = "") -> Dict[str, Any]:
             with open(SETTINGS_FILE, 'r') as f:
                 all_settings = json.load(f)
                 if page:
-                    return all_settings.get(page, get_default_settings(page))
+                    # Merge defaults with saved settings to ensure all fields exist
+                    defaults = get_default_settings(page)
+                    saved = all_settings.get(page, {})
+                    defaults.update(saved)  # Saved settings override defaults
+                    return defaults
                 return all_settings.get('default', get_default_settings())
     except Exception as e:
         st.error(f"Error loading settings: {str(e)}")
@@ -37,25 +41,26 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
     }
 
     if page == 'alerts':
-        base_settings.update({
+        return {
+            **base_settings,
             'sheet_name': 'ALERTS',
             'start_col': 'A',
             'end_col': 'D'
-        })
+        }
     elif page == 'signals':
-        base_settings.update({
+        return {
+            **base_settings,
             'sheet_name': 'Dashboard-ETFs-Sort',
             'start_col': 'A',
             'end_col': 'AW'
-        })
-    else:
-        base_settings.update({
-            'sheet_name': 'Sheet1',
-            'start_col': 'A',
-            'end_col': 'Z'
-        })
+        }
 
-    return base_settings
+    return {
+        **base_settings,
+        'sheet_name': 'Sheet1',
+        'start_col': 'A',
+        'end_col': 'Z'
+    }
 
 def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
     """Save settings to JSON file."""
@@ -67,11 +72,15 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
             with open(SETTINGS_FILE, 'r') as f:
                 all_settings = json.load(f)
 
-        # Update settings for specific page or default
+        # Merge with existing settings to preserve other fields
         if page:
-            all_settings[page] = settings
+            current_settings = all_settings.get(page, {})
+            current_settings.update(settings)
+            all_settings[page] = current_settings
         else:
-            all_settings['default'] = settings
+            current_settings = all_settings.get('default', {})
+            current_settings.update(settings)
+            all_settings['default'] = current_settings
 
         # Save all settings
         with open(SETTINGS_FILE, 'w') as f:

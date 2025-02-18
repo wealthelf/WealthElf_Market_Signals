@@ -11,20 +11,17 @@ def display_settings_page():
 
     st.markdown("---")
 
-    # Initialize settings if not present in session state
-    if 'alerts_settings' not in st.session_state:
-        st.session_state.alerts_settings = load_settings('alerts')
-    if 'signals_settings' not in st.session_state:
-        st.session_state.signals_settings = load_settings('signals')
+    # Load settings at the start of the page
+    alerts_settings = load_settings('alerts')
+    signals_settings = load_settings('signals')
 
     # Alerts Configuration
     st.header("Alerts Page Settings")
-    alerts_settings = st.session_state.alerts_settings
 
     # Alerts sheet configuration
     alerts_sheet = st.text_input(
         "Sheet Name",
-        value=alerts_settings.get('sheet_name', 'ALERTS'),
+        value=alerts_settings['sheet_name'],
         key="alerts_sheet_name",
         help="Enter the sheet name for Alerts page"
     )
@@ -34,14 +31,14 @@ def display_settings_page():
     with col1:
         alerts_start_col = st.text_input(
             "Start Column",
-            value=alerts_settings.get('start_col', 'A'),
+            value=alerts_settings['start_col'],
             key="alerts_start_col",
             help="Enter start column letter (e.g., A)"
         ).upper()
     with col2:
         alerts_end_col = st.text_input(
             "End Column",
-            value=alerts_settings.get('end_col', 'D'),
+            value=alerts_settings['end_col'],
             key="alerts_end_col",
             help="Enter end column letter (e.g., D)"
         ).upper()
@@ -49,12 +46,11 @@ def display_settings_page():
     # Signals Configuration
     st.markdown("---")
     st.header("Signals Page Settings")
-    signals_settings = st.session_state.signals_settings
 
     # Signals sheet configuration
     signals_sheet = st.text_input(
         "Sheet Name",
-        value=signals_settings.get('sheet_name', 'Dashboard-ETFs-Sort'),
+        value=signals_settings['sheet_name'],
         key="signals_sheet_name",
         help="Enter the sheet name for Signals page"
     )
@@ -64,21 +60,21 @@ def display_settings_page():
     with col1:
         signals_start_col = st.text_input(
             "Start Column",
-            value=signals_settings.get('start_col', 'A'),
+            value=signals_settings['start_col'],
             key="signals_start_col",
             help="Enter start column letter (e.g., A)"
         ).upper()
     with col2:
         signals_end_col = st.text_input(
             "End Column",
-            value=signals_settings.get('end_col', 'AW'),
+            value=signals_settings['end_col'],
             key="signals_end_col",
             help="Enter end column letter (e.g., AW)"
         ).upper()
 
     # Save Settings Button
     if st.button("💾 Save Settings", type="primary"):
-        # Create new settings dictionaries
+        # Update settings with new values while preserving other fields
         new_alerts_settings = alerts_settings.copy()
         new_alerts_settings.update({
             'sheet_name': alerts_sheet,
@@ -98,11 +94,7 @@ def display_settings_page():
         signals_saved = save_settings(new_signals_settings, 'signals')
 
         if alerts_saved and signals_saved:
-            # Update session state with new settings
-            st.session_state.alerts_settings = new_alerts_settings
-            st.session_state.signals_settings = new_signals_settings
             st.success("Settings saved successfully!")
-            # Remove the experimental_rerun to prevent navigation
         else:
             st.error("Failed to save settings")
 
