@@ -9,13 +9,11 @@ def display_settings_page():
         st.session_state.settings_initialized = True
         st.session_state.settings_saved = False
 
-    # App header with logo and title
-    col1, col2, col3 = st.columns([1, 3, 1])
+    # App header with title
+    col1, col2 = st.columns([4, 1])
     with col1:
-        st.image("attached_assets/9Box favicon.png", width=100)
-    with col2:
         st.title("Application Settings")
-    with col3:
+    with col2:
         st.button("💾 Save Current Settings", on_click=save_current_settings)
 
     st.markdown("---")
@@ -117,7 +115,6 @@ def save_current_settings():
         st.success("✅ Settings saved successfully!")
     else:
         st.error("❌ Failed to save settings")
-
 
 
 if __name__ == "__main__":

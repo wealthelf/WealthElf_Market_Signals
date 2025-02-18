@@ -71,13 +71,11 @@ def create_range_string(sheet_name, start_col, end_col, start_row, end_row):
 def display_signals_page():
     """Main function to display the signals page"""
     try:
-        # App header with logo and title
-        col1, col2, col3 = st.columns([1, 3, 1])
+        # App header with title
+        col1, col2 = st.columns([4, 1])
         with col1:
-            st.image("attached_assets/9Box favicon.png", width=100)
-        with col2:
             st.title("Market Signals")
-        with col3:
+        with col2:
             st.button("💾 Save Current Settings", on_click=save_current_settings)
 
         st.markdown("---")

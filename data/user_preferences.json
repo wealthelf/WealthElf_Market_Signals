@@ -84,9 +84,10 @@
     "spreadsheet_id": "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
     "start_row": 1,
     "end_row": 1000,
-    "sort_by": "Last TPI Flip",
-    "sort_ascending": true,
+    "sort_by": "TPI Slope",
+    "sort_ascending": false,
     "selected_columns": [
+      "Ticker",
       "Current TPI Signal",
       "Last TPI Flip",
       "Before Last TPI Flip",
@@ -108,7 +109,7 @@
       "TPI MA"
     ],
     "filters": {
-      "Name": "[]",
+      "Ticker": "",
       "Current TPI Signal": [
         -100.0,
         100.0
@@ -176,6 +177,6 @@
     },
     "sheet_name": "SIGNALS",
     "start_col": "A",
-    "end_col": "U"
+    "end_col": "T"
   }
 }
