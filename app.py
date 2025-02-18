@@ -5,13 +5,19 @@ from components.data_table import render_data_table, column_selector
 from components.filters import render_filters, render_sort_controls
 
 st.set_page_config(
-    page_title="Google Sheets Data Viewer",
-    page_icon="📊",
+    page_title="WealthElf Market Signals",
+    page_icon="attached_assets/9Box favicon.png",
     layout="wide"
 )
 
 def main():
-    st.title("📊 Google Sheets Data Viewer")
+    # App header with logo and title
+    col1, col2 = st.columns([1, 4])
+    with col1:
+        st.image("attached_assets/9Box favicon.png", width=100)
+    with col2:
+        st.title("WealthElf Market Signals")
+        st.markdown("---")
 
     # Sidebar for sheet configuration
     st.sidebar.header("Sheet Configuration")
