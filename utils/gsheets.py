@@ -12,13 +12,12 @@ def create_google_service():
     try:
         # Load credentials from the JSON file
         cred_path = "attached_assets/replitdataviewer-988b936cfce7.json"
-        if os.path.exists(cred_path):
-            with open(cred_path, 'r') as f:
-                creds_dict = json.load(f)
-                st.secrets["gcp_service_account"] = creds_dict
+        if not os.path.exists(cred_path):
+            st.error(f"Credentials file not found at {cred_path}")
+            return None
 
-        credentials = Credentials.from_service_account_info(
-            st.secrets["gcp_service_account"],
+        credentials = Credentials.from_service_account_file(
+            cred_path,
             scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
         )
         service = build('sheets', 'v4', credentials=credentials)
