@@ -126,14 +126,15 @@ def display_alerts_page():
 
                     # Filtering and sorting
                     st.subheader("Data Controls")
-                    filters = render_filters(df)
+                    filters = render_filters(df, page_context='alerts')
                     # Store current filters in session state
                     st.session_state.current_filters = filters
 
                     sort_by, ascending = render_sort_controls(
                         df,
                         default_sort=st.session_state.alerts_settings['sort_by'],
-                        default_ascending=st.session_state.alerts_settings['sort_ascending']
+                        default_ascending=st.session_state.alerts_settings['sort_ascending'],
+                        page_context='alerts'
                     )
 
                     # Apply operations

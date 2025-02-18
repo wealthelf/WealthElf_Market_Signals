@@ -1,13 +1,14 @@
 import streamlit as st
 import pandas as pd
 
-def render_filters(df):
+def render_filters(df, page_context=''):
     """Render filter controls for DataFrame."""
     if df is None:
         return {}
 
     filters = {}
-    saved_filters = st.session_state.settings.get('filters', {})
+    settings_key = f"{page_context}_settings" if page_context else "settings"
+    saved_filters = st.session_state.get(settings_key, {}).get('filters', {})
 
     with st.expander("Filters"):
         for column in df.columns:
@@ -59,7 +60,7 @@ def render_filters(df):
 
     return filters
 
-def render_sort_controls(df, default_sort="", default_ascending=True):
+def render_sort_controls(df, default_sort="", default_ascending=True, page_context=''):
     """Render sorting controls with defaults."""
     if df is None:
         return None, True
@@ -89,8 +90,9 @@ def render_sort_controls(df, default_sort="", default_ascending=True):
         )
 
     # Update session state with current sort settings
-    if 'settings' in st.session_state:
-        st.session_state.settings['sort_by'] = sort_by
-        st.session_state.settings['sort_ascending'] = ascending
+    settings_key = f"{page_context}_settings" if page_context else "settings"
+    if settings_key in st.session_state:
+        st.session_state[settings_key]['sort_by'] = sort_by
+        st.session_state[settings_key]['sort_ascending'] = ascending
 
     return sort_by, ascending

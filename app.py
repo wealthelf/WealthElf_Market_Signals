@@ -43,6 +43,9 @@ with col2:
         help="Monitor market signals"
     ):
         st.session_state.current_page = 'signals'
+        # Ensure signals_settings is initialized when navigating to signals page
+        if 'signals_settings' not in st.session_state:
+            st.session_state.signals_settings = load_settings('signals')
 
 with col3:
     if st.button(

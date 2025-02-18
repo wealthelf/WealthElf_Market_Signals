@@ -126,14 +126,15 @@ def display_signals_page():
 
                     # Filtering and sorting
                     st.subheader("Data Controls")
-                    filters = render_filters(df)
+                    filters = render_filters(df, page_context='signals')
                     # Store current filters in session state
                     st.session_state.current_filters = filters
 
                     sort_by, ascending = render_sort_controls(
                         df,
                         default_sort=st.session_state.signals_settings['sort_by'],
-                        default_ascending=st.session_state.signals_settings['sort_ascending']
+                        default_ascending=st.session_state.signals_settings['sort_ascending'],
+                        page_context='signals'
                     )
 
                     # Apply operations
