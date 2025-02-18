@@ -57,10 +57,16 @@ def validate_range_inputs(sheet_name, start_col, end_col, start_row, end_row):
 
 def create_range_string(sheet_name, start_col, end_col, start_row, end_row):
     """Create a properly formatted range string for Google Sheets API"""
-    # Handle special characters in sheet name
-    sheet_name = sheet_name.replace("'", "''")
-    # Format the range string with proper escaping
-    return f"'{sheet_name}'!{start_col}{start_row}:{end_col}{end_row}"
+    try:
+        # Remove any existing single quotes from sheet name
+        clean_sheet_name = sheet_name.replace("'", "")
+        # Escape any special characters by wrapping in single quotes
+        escaped_sheet_name = f"'{clean_sheet_name}'"
+        # Create the range string
+        return f"{escaped_sheet_name}!{start_col}{start_row}:{end_col}{end_row}"
+    except Exception as e:
+        st.error(f"Error formatting range string: {str(e)}")
+        return None
 
 def display_signals_page():
     """Main function to display the signals page"""
@@ -152,6 +158,8 @@ def display_signals_page():
 
         # Create range with proper format
         range_name = create_range_string(sheet_name, start_col, end_col, start_row, end_row)
+        if not range_name:
+            return
 
         # Manual refresh button
         if st.sidebar.button("🔄 Refresh Data"):
@@ -162,6 +170,7 @@ def display_signals_page():
         if spreadsheet_id and sheet_name:
             with st.spinner("Loading data..."):
                 try:
+                    st.write(f"Debug - Range string: {range_name}")  # Debug output
                     df = load_sheet_data(spreadsheet_id, range_name)
 
                     if df is not None and not df.empty:
