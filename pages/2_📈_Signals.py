@@ -19,11 +19,10 @@ if 'signals_settings' not in st.session_state:
             'end_col': "U",
             'start_row': 1,
             'end_row': 1000,
-            'sort_by': "",
-            'sort_ascending': True,
+            'sort_by': "TPI Slope",
+            'sort_ascending': False,
             'selected_columns': [],
-            'filters': {},
-            'max_rows': 200 # Added max_rows to default settings
+            'filters': {}
         }
 
 def save_current_settings():
@@ -35,12 +34,10 @@ def save_current_settings():
         'end_col': st.session_state.end_col,
         'start_row': st.session_state.start_row,
         'end_row': st.session_state.end_row,
-        'sort_by': st.session_state.get('sort_by', ""),
-        'sort_ascending': st.session_state.get('sort_ascending', True),
+        'sort_by': st.session_state.get('sort_by', "TPI Slope"),
+        'sort_ascending': st.session_state.get('sort_ascending', False),
         'selected_columns': st.session_state.get('column_selector', []),
-        'filters': st.session_state.get('current_filters', {}),
-        'max_rows': st.session_state.get('max_rows', 200) # Added max_rows to saved settings
-
+        'filters': st.session_state.get('current_filters', {})
     }
 
     st.session_state.signals_settings.update(current_settings)
@@ -83,11 +80,12 @@ def display_signals_page():
         with col1:
             st.title("Market Signals")
         with col2:
+            if st.button("💾 Save Current Settings", on_click=save_current_settings):
+                pass #This button now exists in the header.  Leaving it here avoids errors.
+        with col3:
             if st.button("🔄 Refresh Data"):
                 st.cache_data.clear()
                 st.success("Data cache cleared! Loading fresh data...")
-        with col3:
-            st.button("💾 Save Current Settings", on_click=save_current_settings)
 
         st.markdown("---")
 
@@ -171,12 +169,6 @@ def display_signals_page():
             return
 
 
-        # Manual refresh button
-        #This is now handled in the header.  Leaving it commented out to avoid errors.
-        # if st.sidebar.button("🔄 Refresh Data"):
-        #     st.cache_data.clear()
-        #     st.success("Data cache cleared! Loading fresh data...")
-
         # Load data
         if spreadsheet_id and sheet_name:
             with st.spinner("Loading data..."):
@@ -231,8 +223,6 @@ def display_signals_page():
 
     except Exception as e:
         st.error(f"An error occurred while displaying the signals page: {str(e)}")
-        import traceback
-        st.exception(traceback.format_exc())
 
 if __name__ == "__main__":
     display_signals_page()
