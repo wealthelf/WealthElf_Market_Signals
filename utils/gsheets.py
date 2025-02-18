@@ -38,7 +38,7 @@ def get_sample_data():
     return pd.DataFrame(data)
 
 @st.cache_data(ttl=300)  # Cache for 5 minutes
-def load_sheet_data(spreadsheet_id, sheet_name):
+def load_sheet_data(spreadsheet_id, range_name):
     """Load data from Google Sheets with caching."""
     try:
         service = create_google_service()
@@ -46,16 +46,19 @@ def load_sheet_data(spreadsheet_id, sheet_name):
             st.error("Failed to create Google Sheets service. Using sample data.")
             return get_sample_data()
 
-        # First, get the sheet metadata to determine the range
+        # First, get the sheet metadata to determine if the sheet exists
         try:
             sheet_metadata = service.spreadsheets().get(
                 spreadsheetId=spreadsheet_id
             ).execute()
 
+            # Extract sheet name from range
+            sheet_name = range_name.split('!')[0].strip("'")
+
             # Find the specified sheet
             sheet_found = False
             for sheet in sheet_metadata.get('sheets', []):
-                if sheet['properties']['title'] == sheet_name.strip("'"):
+                if sheet['properties']['title'] == sheet_name:
                     sheet_found = True
                     break
 
@@ -68,31 +71,33 @@ def load_sheet_data(spreadsheet_id, sheet_name):
             return get_sample_data()
 
         # Get the data with the proper range format
-        result = service.spreadsheets().values().get(
-            spreadsheetId=spreadsheet_id,
-            range=sheet_name
-        ).execute()
+        try:
+            result = service.spreadsheets().values().get(
+                spreadsheetId=spreadsheet_id,
+                range=range_name
+            ).execute()
 
-        values = result.get('values', [])
-        if not values:
-            st.warning('No data found in the sheet.')
+            values = result.get('values', [])
+            if not values:
+                st.warning('No data found in the specified range.')
+                return None
+
+            # Convert to DataFrame
+            df = pd.DataFrame(values[1:], columns=values[0])
+
+            # Convert numeric columns to appropriate types
+            for col in df.columns:
+                try:
+                    df[col] = pd.to_numeric(df[col])
+                except:
+                    continue
+
+            return df
+
+        except HttpError as error:
+            st.error(f"Failed to load data: {str(error)}")
             return None
 
-        # Convert to DataFrame
-        df = pd.DataFrame(values[1:], columns=values[0])
-
-        # Convert numeric columns to appropriate types
-        for col in df.columns:
-            try:
-                df[col] = pd.to_numeric(df[col])
-            except:
-                continue
-
-        return df
-
-    except HttpError as error:
-        st.error(f"Failed to load data: {str(error)}")
-        return get_sample_data()
     except Exception as e:
         st.error(f"An unexpected error occurred: {str(e)}")
-        return get_sample_data()
+        return None
