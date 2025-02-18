@@ -1,0 +1,134 @@
+0LNB.SG	XBT Bitcoin Tracker Euro
+AGAP.L	WisdomTree Agriculture
+AGCP.L	WisdomTree Broad Commodities
+AIAG.L	L&G Artificial Intelligence UCITS ETF
+AIGI.L	WisdomTree Industrial Metals
+AIGS.L	WisdomTree Softs
+BCHS.L	Invesco CoinShares Global Blockchain UCITS ETF
+BCOG.L	L&G All Commodities UCITS ETF
+BOTG.L	Global X Robotics & Artificial Intelligence UCITS ETF
+BRNT.L	WisdomTree Brent Crude Oil
+CG1.L	Amundi ETF DAX UCITS ETF DR
+CMOP.L	Invesco Bloomberg Commodity UCITS ETF
+CNKY.L	iShares VII PLC - iShares Nikkei 225 UCITS ETF JPY (Acc)
+CO2.L	SparkChange Physical Carbon EUA ETC
+COCO.L	WisdomTree Cocoa
+COFF.L	WisdomTree Coffee
+COPA.L	WisdomTree Copper
+COPX.L	Global X Copper Miners UCITS ETF
+CORN.L	WisdomTree Corn
+COTN.L	WisdomTree Cotton
+CRAL.L	Lyxor Bloomberg Equal-weight Commodity ex-Agriculture UCITS ETF
+CRUD.L	WisdomTree WTI Crude Oil
+CS1.L	Amundi ETF MSCI Spain UCITS ETF
+CSCA.L	iShares VII PLC - iShares MSCI Canada UCITS ETF
+CSWG.L	Amundi Index Solutions - Amundi MSCI Switzerland
+CUKS.L	iShares VII PLC - iShares MSCI UK Small Cap UCITS ETF GBP (Acc)
+DAGB.L	VanEck Crypto & Blockchain Innovators UCITS ETF
+DAPP.L	VanEck Crypto & Blockchain Innovators UCITS ETF
+DGIT.L	iShares Digitalisation UCITS ETF
+DGRG.L	WisdomTree US Quality Dividend Growth UCITS ETF
+EMAS.L	SPDR MSCI EM Asia UCITS ETF
+EMQP.L	EMQQ Emerging Markets Internet & Ecommerce UCITS ETF
+EQGB.L	Invesco EQQQ NASDAQ-100 UCITS ETF
+EQQQ.L	Invesco EQQQ NASDAQ-100 UCITS ETF
+ESGB.L	VanEck Video Gaming and eSports UCITS ETF
+EWSP.L	iShares S&P 500 Equal Weight UCITS ETF
+EXCS.L	iShares MSCI EM ex China UCITS ETF
+FCBR.L	First Trust Nasdaq Cybersecurity UCITS ETF
+FKU.L	First Trust United Kingdom AlphaDEX UCITS ETF
+FLRK.L	Franklin FTSE Korea UCITS ETF
+FTAL.L	SPDR FTSE UK All Share UCITS ETF Acc
+FUSP.L	Fidelity US Quality Income ETF
+GDGB.L	VanEck Gold Miners UCITS ETF
+GGRP.L	WisdomTree Global Quality Dividend Growth UCITS ETF
+GIGB.L	VanEck Global Mining UCITS ETF
+GJGB.L	VanEck Junior Gold Miners UCITS ETF
+HDLG.L	Invesco S&P 500 High Dividend Low Volatility UCITS ETF
+HOGS.L	WisdomTree Lean Hogs
+IASH.L	iShares MSCI China A UCITS ETF
+IDJG.L	iShares Euro Total Market Growth Large UCITS ETF
+IGUS.L	iShares V PLC - iShares S&P 500 GBP Hedged UCITS ETF (Acc)
+IH2O.L	iShares Global Water UCITS ETF USD (Dist)
+IIND.L	iShares MSCI India UCITS ETF
+ISFR.L	iShares MSCI France UCITS ETF
+ISJP.L	iShares MSCI Japan Small Cap UCITS ETF USD (Dist)
+ISP6.L	iShares S&P Small Cap 600 UCITS ETF USD (Dist)
+ISPY.L	L&G Cyber Security UCITS ETF
+ITEP.L	HAN-GINS Tech Megatrend Equal Weight UCITS ETF
+ITKY.L	iShares MSCI Turkey UCITS ETF
+ITWN.L	iShares MSCI Taiwan UCITS ETF
+IUKD.L	iShares UK Dividend UCITS ETF
+IUKP.L	iShares UK Property UCITS ETF
+IUMF.L	iShares Edge MSCI USA Momentum Factor UCITS ETF USD (Acc)
+IUSF.L	iShares Edge MSCI USA Size Factor UCITS ETF
+IUVF.L	iShares Edge MSCI USA Value Factor UCITS ETF USD (Acc)
+IWFQ.L	iShares Edge MSCI World Quality Factor UCITS ETF
+IWFV.L	iShares Edge MSCI World Value Factor UCITS ETF USD (Acc)
+JPSG.L	ISHARES IV PLC ISHARES MSCI JPN
+MSAP.L	Source Markets Plc - Invesco Msci Saudi Arabia Ucits ETF
+MSOS	AdvisorShares Pure US Cannabis ETF
+MXFS.L	Invesco MSCI Emerging Markets UCITS ETF
+NGSP.L	WisdomTree Natural Gas
+NICK.L	WisdomTree Nickel
+NUCL.MI	VanEck Uranium and Nuclear Technologies UCITS ETF
+OIH	VanEck Oil Services ETF
+PCRD.L	WisdomTree WTI Crude Oil - GBP Daily Hedged
+PHGP.L	WisdomTree Physical Gold
+PHPD.L	WisdomTree Physical Palladium
+PHPP.L	WisdomTree Physical Precious Metals
+PHPT.L	WisdomTree Physical Platinum
+PHSP.L	WisdomTree Physical Silver
+PMLP.L	Alerian Midstream Energy Dividend UCITS ETF
+QQEW	First Trust NASDAQ-100 Equal Weighted Index Fund
+R1GR.L	iShares Russell 1000 Growth UCITS ETF
+REMX.L	VanEck Rare Earth and Strategic Metals UCITS ETF
+SALL.L	WisdomTree Broad Commodities 1x Daily Short
+SAUS.L	iShares MSCI Australia UCITS ETF
+SBIO.L	Invesco NASDAQ Biotech UCITS ETF
+SEDY.L	iShares V PLC - iShares EM Dividend UCITS ETF USD (Dist)
+SGLS.L	Invesco Physical Gold ETC GBP Hedged
+SILV.L	Global X Silver Miners UCITS ETF
+SJPA.L	iShares Core MSCI Japan IMI UCITS ETF USD (Acc)
+SMEA.L	iShares Core MSCI Europe UCITS ETF EUR (Acc)
+SMGB.L	VanEck Semiconductor UCITS ETF
+SOYB	Teucrium Soybean Fund
+SPOG.L	iShares V PLC - iShares Oil & Gas Exploration & Production UCITS ETF USD (Acc)
+SPOL.L	iShares V PLC - iShares MSCI Poland UCITS ETF
+SPXP.L	Invesco S&P 500 UCITS ETF
+SRSA.L	iShares MSCI South Africa UCITS ETF
+SUGA.L	WisdomTree Sugar
+URNM	Sprott Uranium Miners ETF
+UVAL.L	SPDR MSCI USA Value UCITS ETF
+VALW.L	SPDR MSCI World Value UCITS ETF
+VHYL.L	Vanguard FTSE All-World High Dividend Yield UCITS ETF
+WEAT.L	WisdomTree Wheat
+WOOD.L	iShares Global Timber & Forestry UCITS ETF
+XCX3.L	Xtrackers MSCI Malaysia UCITS ETF
+XCX4.L	Xtrackers MSCI Thailand UCITS ETF
+XCX5.L	Xtrackers MSCI India Swap UCITS ETF
+XDAX.L	Xtrackers DAX UCITS ETF
+XDEM.L	Xtrackers MSCI World Momentum UCITS ETF
+XDEV.L	Xtrackers MSCI World Value UCITS ETF
+XDWI.L	Xtrackers MSCI World Industrials UCITS ETF
+XEWG.L	Xtrackers S&P 500 Equal Weight UCITS ETF
+XLBP.L	Invesco Materials S&P US Select Sector UCITS ETF
+XLCP.L	Invesco Communications S&P US Select Sector UCITS ETF
+XLEP.L	Invesco Energy S&P US Select Sector UCITS ETF
+XLFQ.L	Invesco Markets plc - Invesco Financial S&P US Select Sector UCITS ETF
+XLIP.L	Invesco Industrials S&P US Select Sector UCITS ETF
+XLKQ.L	Invesco Technology S&P US Select Sector UCITS ETF
+XLPP.L	Invesco Consumer Staples S&P US Select Sector UCITS ETF
+XLUP.L	Invesco Utilities S&P US Select Sector UCITS ETF
+XLVP.L	Invesco Health Care S&P US Select Sector UCITS ETF
+XLYP.L	Invesco Consumer Discretionary S&P US Select Sector UCITS ETF
+XMAW.L	Xtrackers MSCI AC World ESG Screened UCITS ETF
+XMBR.L	Xtrackers MSCI Brazil UCITS ETF
+XMCX.L	Xtrackers FTSE 250 UCITS ETF
+XMEU.L	Xtrackers MSCI Europe UCITS ETF 1C
+XMEX.L	Xtrackers MSCI Mexico UCITS ETF
+XMID.L	Xtrackers MSCI Indonesia Swap UCITS ETF
+XMMS.L	Xtrackers MSCI Emerging Markets UCITS ETF
+XMWD.L	Xtrackers MSCI World Swap UCITS ETF
+XREP.L	Source Markets plc - Source Real Estate S&P US Select Sector UCITS ETF
+XRSG.L	Xtrackers Russell 2000 UCITS ETF

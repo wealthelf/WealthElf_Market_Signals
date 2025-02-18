@@ -2,6 +2,7 @@ import streamlit as st
 from utils.gsheets import load_sheet_data
 from utils.data_operations import filter_dataframe, sort_dataframe, select_columns
 from utils.settings_manager import load_settings, save_settings
+from utils.database import import_market_symbols_from_file, load_market_symbols
 from components.data_table import render_data_table, column_selector
 from components.filters import render_filters, render_sort_controls
 
@@ -56,9 +57,9 @@ def validate_range_inputs(sheet_name, start_col, end_col, start_row, end_row):
 
 def create_range_string(sheet_name, start_col, end_col, start_row, end_row):
     """Create a properly formatted range string for Google Sheets API"""
-    # Escape single quotes in sheet name if present
+    # Handle special characters in sheet name
     sheet_name = sheet_name.replace("'", "''")
-    # Format the range string
+    # Format the range string with proper escaping
     return f"'{sheet_name}'!{start_col}{start_row}:{end_col}{end_row}"
 
 def display_signals_page():
@@ -72,6 +73,15 @@ def display_signals_page():
         st.button("💾 Save Current Settings", on_click=save_current_settings)
 
     st.markdown("---")
+
+    # Import market symbols if available
+    try:
+        market_symbols_df = load_market_symbols()
+        if not market_symbols_df.empty:
+            st.success(f"Loaded {len(market_symbols_df)} market symbols from database")
+    except Exception as e:
+        st.warning(f"Could not load market symbols: {str(e)}")
+        market_symbols_df = None
 
     # Sidebar for sheet configuration
     st.sidebar.header("Sheet Configuration")
@@ -119,6 +129,18 @@ def display_signals_page():
         key="end_row",
         help="Enter end row number"
     )
+
+    # Import market symbols button
+    if st.sidebar.button("📥 Import Market Symbols"):
+        try:
+            import_market_symbols_from_file(
+                "attached_assets/Pasted-0LNB-SG-XBT-Bitcoin-Tracker-Euro-AGAP-L-WisdomTree-Agriculture-AGCP-L-WisdomTree-Broad-Commodities-A-1739880998797.txt"
+            )
+            st.success("Market symbols imported successfully!")
+            # Refresh the market symbols display
+            market_symbols_df = load_market_symbols()
+        except Exception as e:
+            st.error(f"Error importing market symbols: {str(e)}")
 
     # Validate inputs and create range
     is_valid, error_message = validate_range_inputs(sheet_name, start_col, end_col, start_row, end_row)

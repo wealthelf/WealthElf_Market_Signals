@@ -84,11 +84,9 @@
     "spreadsheet_id": "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
     "start_row": 1,
     "end_row": 1000,
-    "sort_by": "Ticker",
+    "sort_by": "Last TPI Flip",
     "sort_ascending": true,
     "selected_columns": [
-      "Ticker",
-      "Name",
       "Current TPI Signal",
       "Last TPI Flip",
       "Before Last TPI Flip",
@@ -110,7 +108,6 @@
       "TPI MA"
     ],
     "filters": {
-      "Ticker": "",
       "Name": "[]",
       "Current TPI Signal": [
         -100.0,
