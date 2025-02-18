@@ -44,6 +44,23 @@ def save_current_settings():
     else:
         st.error("Failed to save settings")
 
+def validate_range_inputs(sheet_name, start_col, end_col, start_row, end_row):
+    """Validate range inputs to prevent formatting issues"""
+    if not sheet_name or not isinstance(sheet_name, str):
+        return False, "Sheet name is invalid"
+    if not start_col.isalpha() or not end_col.isalpha():
+        return False, "Column letters must be alphabetic characters"
+    if start_row < 1 or end_row < start_row:
+        return False, "Invalid row range"
+    return True, ""
+
+def create_range_string(sheet_name, start_col, end_col, start_row, end_row):
+    """Create a properly formatted range string for Google Sheets API"""
+    # Escape single quotes in sheet name if present
+    sheet_name = sheet_name.replace("'", "''")
+    # Format the range string
+    return f"'{sheet_name}'!{start_col}{start_row}:{end_col}{end_row}"
+
 def display_signals_page():
     # App header with logo and title
     col1, col2, col3 = st.columns([1, 3, 1])
@@ -103,8 +120,14 @@ def display_signals_page():
         help="Enter end row number"
     )
 
+    # Validate inputs and create range
+    is_valid, error_message = validate_range_inputs(sheet_name, start_col, end_col, start_row, end_row)
+    if not is_valid:
+        st.error(f"Invalid input: {error_message}")
+        return
+
     # Create range with proper format
-    range_name = f"'{sheet_name}'!{start_col}{start_row}:{end_col}{end_row}"
+    range_name = create_range_string(sheet_name, start_col, end_col, start_row, end_row)
 
     # Manual refresh button
     if st.sidebar.button("🔄 Refresh Data"):
