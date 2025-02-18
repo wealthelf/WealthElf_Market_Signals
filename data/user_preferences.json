@@ -18,5 +18,29 @@
     "Name": [],
     "Description": [],
     "Date": ""
+  },
+  "alerts": {
+    "spreadsheet_id": "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
+    "start_col": "A",
+    "end_col": "Z",
+    "start_row": 1,
+    "end_row": 1000,
+    "sort_by": "",
+    "sort_ascending": true,
+    "selected_columns": [],
+    "filters": {},
+    "sheet_name": "ALERTS"
+  },
+  "signals": {
+    "spreadsheet_id": "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
+    "start_col": "A",
+    "end_col": "Z",
+    "start_row": 1,
+    "end_row": 1000,
+    "sort_by": "",
+    "sort_ascending": true,
+    "selected_columns": [],
+    "filters": {},
+    "sheet_name": "Dashboard-ETFs-Sort"
   }
 }

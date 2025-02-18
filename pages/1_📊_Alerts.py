@@ -12,7 +12,7 @@ if 'alerts_settings' not in st.session_state:
         # Set default values if no settings are loaded
         st.session_state.alerts_settings = {
             'spreadsheet_id': "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
-            'sheet_name': "Sheet1",
+            'sheet_name': "ALERTS",
             'start_col': "A",
             'end_col': "Z",
             'start_row': 1,
@@ -23,6 +23,9 @@ if 'alerts_settings' not in st.session_state:
             'filters': {}
         }
 
+# Set settings for the current session
+st.session_state.settings = st.session_state.alerts_settings
+
 def save_current_settings():
     """Save current input values as default settings"""
     current_settings = {
@@ -32,8 +35,8 @@ def save_current_settings():
         'end_col': st.session_state.end_col,
         'start_row': st.session_state.start_row,
         'end_row': st.session_state.end_row,
-        'sort_by': st.session_state.sort_by,
-        'sort_ascending': st.session_state.sort_ascending,
+        'sort_by': st.session_state.get('sort_by', ""),
+        'sort_ascending': st.session_state.get('sort_ascending', True),
         'selected_columns': st.session_state.get('column_selector', []),
         'filters': st.session_state.get('current_filters', {})
     }
@@ -60,13 +63,13 @@ def display_alerts_page():
     st.sidebar.header("Sheet Configuration")
     spreadsheet_id = st.sidebar.text_input(
         "Spreadsheet ID",
-        value=st.session_state.alerts_settings['spreadsheet_id'],
+        value=st.session_state.settings['spreadsheet_id'],
         key="spreadsheet_id",
         help="Enter the ID from your Google Sheets URL"
     )
     sheet_name = st.sidebar.text_input(
         "Sheet Name",
-        value=st.session_state.alerts_settings['sheet_name'],
+        value=st.session_state.settings['sheet_name'],
         key="sheet_name",
         help="Enter the name of the sheet (e.g., Sheet1)"
     )
@@ -75,13 +78,13 @@ def display_alerts_page():
     st.sidebar.subheader("Column Range")
     start_col = st.sidebar.text_input(
         "Start Column",
-        value=st.session_state.alerts_settings['start_col'],
+        value=st.session_state.settings['start_col'],
         key="start_col",
         help="Enter start column letter (e.g., A)"
     ).upper()
     end_col = st.sidebar.text_input(
         "End Column",
-        value=st.session_state.alerts_settings['end_col'],
+        value=st.session_state.settings['end_col'],
         key="end_col",
         help="Enter end column letter (e.g., Z)"
     ).upper()
@@ -91,14 +94,14 @@ def display_alerts_page():
     start_row = st.sidebar.number_input(
         "Start Row",
         min_value=1,
-        value=st.session_state.alerts_settings['start_row'],
+        value=st.session_state.settings['start_row'],
         key="start_row",
         help="Enter start row number"
     )
     end_row = st.sidebar.number_input(
         "End Row",
         min_value=1,
-        value=st.session_state.alerts_settings['end_row'],
+        value=st.session_state.settings['end_row'],
         key="end_row",
         help="Enter end row number"
     )
@@ -132,8 +135,8 @@ def display_alerts_page():
 
                     sort_by, ascending = render_sort_controls(
                         df,
-                        default_sort=st.session_state.alerts_settings['sort_by'],
-                        default_ascending=st.session_state.alerts_settings['sort_ascending']
+                        default_sort=st.session_state.settings['sort_by'],
+                        default_ascending=st.session_state.settings['sort_ascending']
                     )
 
                     # Apply operations
