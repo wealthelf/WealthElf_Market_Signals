@@ -67,14 +67,22 @@ def load_settings(page: str = "") -> Dict[str, Any]:
         """, (st.session_state.user_id, page))
         result = cursor.fetchone()
 
+        # Debug log
+        st.write(f"Loading settings for user {st.session_state.user_id}, page {page}")
+        st.write("Database result:", result)
+
         if result and result[0]:  # Access first column of result tuple
             saved_settings = result[0]  # This will be the JSON settings
             settings = defaults.copy()
             settings.update(saved_settings)
+            # Debug log
+            st.write("Loaded settings:", settings)
             return settings
         return defaults
     except Exception as e:
         st.error(f"Error loading settings: {str(e)}")
+        # Debug log
+        st.write("Exception details:", str(e))
         return defaults
     finally:
         conn.close()
@@ -93,6 +101,10 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
     conn = get_db_connection()
     try:
         cursor = conn.cursor()
+
+        # Debug log
+        st.write(f"Saving settings for user {st.session_state.user_id}, page {page}")
+        st.write("Settings to save:", settings)
 
         # Ensure the settings are properly serialized with date handling
         settings_json = json.dumps(settings, cls=DateTimeEncoder)
@@ -124,11 +136,15 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
         conn.commit()
 
         if result:
+            # Debug log
+            st.write("Settings saved successfully")
             return True
         return False
     except Exception as e:
         conn.rollback()
         st.error(f"Error saving settings: {str(e)}")
+        # Debug log
+        st.write("Exception details:", str(e))
         return False
     finally:
         conn.close()
