@@ -10,6 +10,34 @@ st.set_page_config(
     layout="wide"
 )
 
+# Initialize session state for persistent settings
+if 'settings' not in st.session_state:
+    st.session_state.settings = {
+        'spreadsheet_id': "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
+        'sheet_name': "Sheet1",
+        'start_col': "A",
+        'end_col': "Z",
+        'start_row': 1,
+        'end_row': 1000,
+        'sort_by': "",
+        'sort_ascending': True,
+        'selected_columns': []
+    }
+
+def save_current_settings():
+    """Save current input values as default settings"""
+    st.session_state.settings.update({
+        'spreadsheet_id': st.session_state.spreadsheet_id,
+        'sheet_name': st.session_state.sheet_name,
+        'start_col': st.session_state.start_col,
+        'end_col': st.session_state.end_col,
+        'start_row': st.session_state.start_row,
+        'end_row': st.session_state.end_row,
+        'sort_by': st.session_state.sort_by,
+        'sort_ascending': st.session_state.sort_ascending
+    })
+    st.success("Settings saved as default!")
+
 def main():
     # App header with logo and title
     col1, col2 = st.columns([1, 4])
@@ -23,12 +51,14 @@ def main():
     st.sidebar.header("Sheet Configuration")
     spreadsheet_id = st.sidebar.text_input(
         "Spreadsheet ID",
-        value="116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
+        value=st.session_state.settings['spreadsheet_id'],
+        key="spreadsheet_id",
         help="Enter the ID from your Google Sheets URL"
     )
     sheet_name = st.sidebar.text_input(
         "Sheet Name",
-        value="Sheet1",
+        value=st.session_state.settings['sheet_name'],
+        key="sheet_name",
         help="Enter the name of the sheet (e.g., Sheet1)"
     )
 
@@ -36,12 +66,14 @@ def main():
     st.sidebar.subheader("Column Range")
     start_col = st.sidebar.text_input(
         "Start Column",
-        value="A",
+        value=st.session_state.settings['start_col'],
+        key="start_col",
         help="Enter start column letter (e.g., A)"
     ).upper()
     end_col = st.sidebar.text_input(
         "End Column",
-        value="Z",
+        value=st.session_state.settings['end_col'],
+        key="end_col",
         help="Enter end column letter (e.g., Z)"
     ).upper()
 
@@ -50,15 +82,21 @@ def main():
     start_row = st.sidebar.number_input(
         "Start Row",
         min_value=1,
-        value=1,
+        value=st.session_state.settings['start_row'],
+        key="start_row",
         help="Enter start row number"
     )
     end_row = st.sidebar.number_input(
         "End Row",
         min_value=1,
-        value=1000,
+        value=st.session_state.settings['end_row'],
+        key="end_row",
         help="Enter end row number"
     )
+
+    # Save settings button
+    if st.sidebar.button("💾 Save as Default Settings"):
+        save_current_settings()
 
     # Create range with proper format
     range_name = f"'{sheet_name}'!{start_col}{start_row}:{end_col}{end_row}"
@@ -84,7 +122,11 @@ def main():
                     # Filtering and sorting
                     st.subheader("Data Controls")
                     filters = render_filters(df)
-                    sort_by, ascending = render_sort_controls(df)
+                    sort_by, ascending = render_sort_controls(
+                        df,
+                        default_sort=st.session_state.settings['sort_by'],
+                        default_ascending=st.session_state.settings['sort_ascending']
+                    )
 
                     # Apply operations
                     filtered_df = filter_dataframe(df, filters)

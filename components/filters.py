@@ -51,8 +51,8 @@ def render_filters(df):
 
     return filters
 
-def render_sort_controls(df):
-    """Render sorting controls."""
+def render_sort_controls(df, default_sort="", default_ascending=True):
+    """Render sorting controls with defaults."""
     if df is None:
         return None, True
 
@@ -62,14 +62,20 @@ def render_sort_controls(df):
         sort_by = st.selectbox(
             "Sort by",
             [""] + list(df.columns),
+            index=[""] + list(df.columns).index(default_sort) if default_sort in df.columns else 0,
             key="sort_by"
         )
 
     with col2:
         ascending = st.checkbox(
             "Ascending",
-            True,
+            default_ascending,
             key="sort_ascending"
         )
+
+    # Update session state with current sort settings
+    if 'settings' in st.session_state:
+        st.session_state.settings['sort_by'] = sort_by
+        st.session_state.settings['sort_ascending'] = ascending
 
     return sort_by, ascending
