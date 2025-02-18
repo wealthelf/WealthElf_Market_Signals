@@ -22,6 +22,9 @@ if not st.session_state.get('settings_initialized', False) and st.session_state.
     st.session_state.settings_initialized = True
     st.session_state.current_page = None
 
+# Render login form in sidebar
+is_authenticated = render_login_form()
+
 # App header with logo and title
 col1, col2 = st.columns([1, 4])
 with col1:
@@ -29,12 +32,9 @@ with col1:
 with col2:
     st.title("WealthElf Market Signals")
 
-# Render login form in sidebar
-is_authenticated = render_login_form()
+st.markdown("---")
 
 if is_authenticated:
-    st.markdown("---")
-
     # Render navigation
     render_navigation()
 
