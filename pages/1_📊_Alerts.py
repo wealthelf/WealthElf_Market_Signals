@@ -5,6 +5,7 @@ from utils.settings_manager import load_settings, save_settings
 from components.data_table import render_data_table, column_selector
 from components.filters import render_filters, render_sort_controls
 from components.navigation import render_navigation
+import pandas as pd
 
 # Initialize session state for persistent settings
 if 'alerts_settings' not in st.session_state:
@@ -23,6 +24,18 @@ if 'alerts_settings' not in st.session_state:
             'selected_columns': [],
             'filters': {},
         }
+
+def process_datetime_columns(df):
+    """Split datetime column into date and time columns."""
+    if 'Date' in df.columns:
+        # Convert to datetime
+        df['Date'] = pd.to_datetime(df['Date'])
+        # Create new date and time columns
+        df['Date_Only'] = df['Date'].dt.strftime('%Y-%m-%d')
+        df['Time'] = df['Date'].dt.strftime('%H:%M:%S')
+        # Drop original Date column
+        df = df.drop('Date', axis=1)
+    return df
 
 def save_current_settings():
     """Save current input values as default settings"""
@@ -126,6 +139,9 @@ def display_alerts_page():
                 df = load_sheet_data(spreadsheet_id, range_name)
 
                 if df is not None and not df.empty:
+                    # Process datetime columns
+                    df = process_datetime_columns(df)
+
                     st.success("Data loaded successfully!")
 
                     # Column selection
