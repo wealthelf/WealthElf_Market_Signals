@@ -3,6 +3,9 @@ import os
 import streamlit as st
 from typing import Optional, Tuple
 from utils.database import get_db_connection
+import secrets
+from datetime import datetime, timedelta
+from twilio.rest import Client
 
 def hash_password(password: str) -> str:
     """Hash a password with salt."""
@@ -58,13 +61,96 @@ def authenticate_user(username: str, password: str) -> Tuple[bool, Optional[int]
             WHERE username = %s
         """, (username,))
         result = cursor.fetchone()
-        
+
         if result and verify_password(result['password_hash'], password):
             return True, result['id']
         return False, None
     except Exception as e:
         st.error(f"Authentication error: {str(e)}")
         return False, None
+    finally:
+        conn.close()
+
+def create_password_reset_token(email: str) -> Optional[str]:
+    """Create a password reset token for a user."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        # Find user by email
+        cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+
+        if not user:
+            return None
+
+        # Generate a secure token
+        token = secrets.token_urlsafe(32)
+        expires_at = datetime.now() + timedelta(hours=24)
+
+        # Store token in database
+        cursor.execute("""
+            INSERT INTO password_reset_tokens 
+            (user_id, token, expires_at)
+            VALUES (%s, %s, %s)
+        """, (user['id'], token, expires_at))
+
+        conn.commit()
+        return token
+    except Exception as e:
+        st.error(f"Error creating reset token: {str(e)}")
+        return None
+    finally:
+        conn.close()
+
+def verify_reset_token(token: str) -> Optional[int]:
+    """Verify a password reset token and return user_id if valid."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT user_id
+            FROM password_reset_tokens
+            WHERE token = %s 
+            AND used = FALSE
+            AND expires_at > CURRENT_TIMESTAMP
+        """, (token,))
+        result = cursor.fetchone()
+        return result['user_id'] if result else None
+    except Exception as e:
+        st.error(f"Error verifying token: {str(e)}")
+        return None
+    finally:
+        conn.close()
+
+def reset_password(token: str, new_password: str) -> bool:
+    """Reset a user's password using a valid token."""
+    conn = get_db_connection()
+    try:
+        user_id = verify_reset_token(token)
+        if not user_id:
+            return False
+
+        cursor = conn.cursor()
+        # Update password
+        hashed_password = hash_password(new_password)
+        cursor.execute("""
+            UPDATE users 
+            SET password_hash = %s 
+            WHERE id = %s
+        """, (hashed_password, user_id))
+
+        # Mark token as used
+        cursor.execute("""
+            UPDATE password_reset_tokens 
+            SET used = TRUE 
+            WHERE token = %s
+        """, (token,))
+
+        conn.commit()
+        return True
+    except Exception as e:
+        st.error(f"Error resetting password: {str(e)}")
+        return False
     finally:
         conn.close()
 
