@@ -3,6 +3,14 @@ import os
 import streamlit as st
 from typing import Dict, Any
 from utils.database import get_db_connection
+from datetime import date, datetime
+
+class DateTimeEncoder(json.JSONEncoder):
+    """Custom JSON encoder to handle date and datetime objects."""
+    def default(self, obj):
+        if isinstance(obj, (date, datetime)):
+            return obj.isoformat()
+        return super().default(obj)
 
 SETTINGS_FILE = "data/user_preferences.json"
 
@@ -86,8 +94,8 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
     try:
         cursor = conn.cursor()
 
-        # Ensure the settings are properly serialized
-        settings_json = json.dumps(settings)
+        # Ensure the settings are properly serialized with date handling
+        settings_json = json.dumps(settings, cls=DateTimeEncoder)
 
         # Create the table if it doesn't exist
         cursor.execute("""
