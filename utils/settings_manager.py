@@ -45,14 +45,14 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
             **base_settings,
             'sheet_name': 'ALERTS',
             'start_col': 'A',
-            'end_col': 'D'
+            'end_col': 'D'  # Default end column for Alerts
         }
     elif page == 'signals':
         return {
             **base_settings,
             'sheet_name': 'Dashboard-ETFs-Sort',
             'start_col': 'A',
-            'end_col': 'AW'
+            'end_col': 'AW'  # Default end column for Signals
         }
 
     return {
