@@ -36,7 +36,9 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
             'sheet_name': 'SIGNALS',
             'start_col': 'A',
             'end_col': 'U',  # Updated end column for Signals
-            'max_rows': 200  # New setting for max rows
+            'max_rows': 200,  # New setting for max rows
+            'sort_by': 'TPI Slope',  # Default sort column for Signals
+            'sort_ascending': False  # Sort in descending order
         }
 
     return base_settings
