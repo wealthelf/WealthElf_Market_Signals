@@ -73,7 +73,11 @@ elif signals_clicked:
     except ImportError:
         st.error("Error importing Signals page. Check pages/2_📈_Signals.py")
 elif settings_clicked:
-    st.info("Settings page is under development")
+    try:
+        page = importlib.import_module("pages.3_⚙️_Settings")
+        page.display_settings_page()
+    except ImportError:
+        st.error("Error importing Settings page. Check pages/3_⚙️_Settings.py")
 
 if __name__ == "__main__":
     pass
