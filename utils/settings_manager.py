@@ -12,12 +12,6 @@ class DateTimeEncoder(json.JSONEncoder):
             return obj.isoformat()
         return super().default(obj)
 
-SETTINGS_FILE = "data/user_preferences.json"
-
-def ensure_settings_directory():
-    """Ensure the data directory exists."""
-    os.makedirs(os.path.dirname(SETTINGS_FILE), exist_ok=True)
-
 def get_default_settings(page: str = "") -> Dict[str, Any]:
     """Return default settings based on page."""
     base_settings = {
@@ -67,22 +61,14 @@ def load_settings(page: str = "") -> Dict[str, Any]:
         """, (st.session_state.user_id, page))
         result = cursor.fetchone()
 
-        # Debug log
-        st.write(f"Loading settings for user {st.session_state.user_id}, page {page}")
-        st.write("Database result:", result)
-
-        if result and result[0]:  # Access first column of result tuple
-            saved_settings = result[0]  # This will be the JSON settings
+        if result and result[0]:
+            saved_settings = result[0]
             settings = defaults.copy()
             settings.update(saved_settings)
-            # Debug log
-            st.write("Loaded settings:", settings)
             return settings
         return defaults
     except Exception as e:
         st.error(f"Error loading settings: {str(e)}")
-        # Debug log
-        st.write("Exception details:", str(e))
         return defaults
     finally:
         conn.close()
@@ -93,7 +79,6 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
         st.warning("Please log in to save settings.")
         return False
 
-    # Validate settings before saving
     if not isinstance(settings, dict):
         st.error("Invalid settings format")
         return False
@@ -102,11 +87,7 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
     try:
         cursor = conn.cursor()
 
-        # Debug log
-        st.write(f"Saving settings for user {st.session_state.user_id}, page {page}")
-        st.write("Settings to save:", settings)
-
-        # Ensure the settings are properly serialized with date handling
+        # Ensure settings are properly serialized with date handling
         settings_json = json.dumps(settings, cls=DateTimeEncoder)
 
         # Create the table if it doesn't exist
@@ -121,6 +102,7 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
             )
         """)
 
+        # Insert or update settings
         cursor.execute("""
             INSERT INTO user_preferences (user_id, page, settings)
             VALUES (%s, %s, %s::jsonb)
@@ -131,20 +113,16 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
             RETURNING user_id
         """, (st.session_state.user_id, page, settings_json))
 
-        # Check if the insert/update was successful
         result = cursor.fetchone()
         conn.commit()
 
         if result:
-            # Debug log
-            st.write("Settings saved successfully")
+            st.success("Settings saved successfully!")
             return True
         return False
     except Exception as e:
         conn.rollback()
         st.error(f"Error saving settings: {str(e)}")
-        # Debug log
-        st.write("Exception details:", str(e))
         return False
     finally:
         conn.close()
