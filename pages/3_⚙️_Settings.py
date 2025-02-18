@@ -2,8 +2,6 @@ import streamlit as st
 from utils.settings_manager import load_settings, save_settings
 
 def display_settings_page():
-    st.set_page_config(layout="wide")
-
     # App header with logo and title
     col1, col2 = st.columns([1, 4])
     with col1:
