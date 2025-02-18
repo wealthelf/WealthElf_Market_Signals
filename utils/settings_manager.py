@@ -28,7 +28,8 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
             **base_settings,
             'sheet_name': 'ALERTS',
             'start_col': 'A',
-            'end_col': 'D'
+            'end_col': 'D',
+            'max_rows': 200
         }
     elif page == 'signals':
         return {
@@ -37,7 +38,8 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
             'start_col': 'A',
             'end_col': 'U',
             'sort_by': 'TPI Slope',
-            'sort_ascending': False
+            'sort_ascending': False,
+            'max_rows': 200
         }
 
     return base_settings
@@ -88,18 +90,6 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
         # Ensure settings are properly serialized with date handling
         settings_json = json.dumps(settings, cls=DateTimeEncoder)
 
-        # Create the table if it doesn't exist
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS user_preferences (
-                user_id INTEGER NOT NULL,
-                page VARCHAR(50) NOT NULL,
-                settings JSONB NOT NULL,
-                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (user_id, page)
-            )
-        """)
-
         # Insert or update settings
         cursor.execute("""
             INSERT INTO user_preferences (user_id, page, settings)
@@ -115,7 +105,6 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
         conn.commit()
 
         if result:
-            st.success("Settings saved successfully!")
             return True
         return False
     except Exception as e:

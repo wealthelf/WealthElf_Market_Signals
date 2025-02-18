@@ -24,6 +24,7 @@ if 'alerts_settings' not in st.session_state:
             'sort_ascending': True,
             'selected_columns': [],
             'filters': {},
+            'max_rows': 200
         }
 
 def process_datetime_columns(df):
@@ -53,10 +54,10 @@ def save_current_settings():
             'sort_by': st.session_state.get('sort_by', ""),
             'sort_ascending': st.session_state.get('sort_ascending', True),
             'selected_columns': st.session_state.get('column_selector', []),
-            'filters': st.session_state.get('current_filters', {})
+            'filters': st.session_state.get('current_filters', {}),
+            'max_rows': st.session_state.get('max_rows', 200)
         }
 
-        st.session_state.alerts_settings = current_settings
         if save_settings(current_settings, 'alerts'):
             st.success("Settings saved successfully!")
             return True
@@ -75,6 +76,10 @@ def display_alerts_page():
 
     # Add navigation at the top
     render_navigation('alerts')
+
+    # Load user settings if not already loaded
+    if not st.session_state.get('alerts_settings'):
+        st.session_state.alerts_settings = load_settings('alerts')
 
     # App header with title
     col1, col2, col3 = st.columns([3, 1, 1])
@@ -197,6 +202,15 @@ def display_alerts_page():
                 st.info("Please verify your spreadsheet ID and range settings.")
     else:
         st.info("Please enter a Spreadsheet ID and sheet name to begin.")
+
+    # Update sort settings when they change
+    if 'sort_by' in st.session_state or 'sort_ascending' in st.session_state:
+        current_settings = st.session_state.alerts_settings.copy()
+        current_settings.update({
+            'sort_by': st.session_state.get('sort_by', ""),
+            'sort_ascending': st.session_state.get('sort_ascending', True)
+        })
+        save_settings(current_settings, 'alerts')
 
 if __name__ == "__main__":
     display_alerts_page()
