@@ -1,8 +1,14 @@
 import streamlit as st
 from utils.settings_manager import load_settings, save_settings
 from components.navigation import render_navigation
+from utils.auth import is_logged_in
 
 def display_settings_page():
+    # Check authentication first
+    if not is_logged_in():
+        st.error("Please log in to access this page")
+        st.stop()
+
     # Add navigation at the top
     render_navigation('settings')
 
@@ -115,29 +121,40 @@ def display_settings_page():
     """)
 
 def save_current_settings():
-    new_alerts_settings = st.session_state.alerts_settings.copy()
-    new_alerts_settings.update({
+    """Save current settings to database"""
+    # Save alerts settings
+    alerts_settings = {
         'sheet_name': st.session_state.alerts_sheet_name,
         'start_col': st.session_state.alerts_start_col,
         'end_col': st.session_state.alerts_end_col,
-        'max_rows': st.session_state.alerts_max_rows
-    })
+        'max_rows': st.session_state.alerts_max_rows,
+        'spreadsheet_id': st.session_state.alerts_settings.get('spreadsheet_id'),
+        'sort_by': st.session_state.alerts_settings.get('sort_by', ""),
+        'sort_ascending': st.session_state.alerts_settings.get('sort_ascending', True),
+        'selected_columns': st.session_state.alerts_settings.get('selected_columns', []),
+        'filters': st.session_state.alerts_settings.get('filters', {})
+    }
 
-    new_signals_settings = st.session_state.signals_settings.copy()
-    new_signals_settings.update({
+    # Save signals settings
+    signals_settings = {
         'sheet_name': st.session_state.signals_sheet_name,
         'start_col': st.session_state.signals_start_col,
         'end_col': st.session_state.signals_end_col,
-        'max_rows': st.session_state.signals_max_rows
-    })
+        'max_rows': st.session_state.signals_max_rows,
+        'spreadsheet_id': st.session_state.signals_settings.get('spreadsheet_id'),
+        'sort_by': st.session_state.signals_settings.get('sort_by', ""),
+        'sort_ascending': st.session_state.signals_settings.get('sort_ascending', True),
+        'selected_columns': st.session_state.signals_settings.get('selected_columns', []),
+        'filters': st.session_state.signals_settings.get('filters', {})
+    }
 
     # Save both settings
-    alerts_saved = save_settings(new_alerts_settings, 'alerts')
-    signals_saved = save_settings(new_signals_settings, 'signals')
+    alerts_saved = save_settings(alerts_settings, 'alerts')
+    signals_saved = save_settings(signals_settings, 'signals')
 
     if alerts_saved and signals_saved:
-        st.session_state.alerts_settings = new_alerts_settings
-        st.session_state.signals_settings = new_signals_settings
+        st.session_state.alerts_settings = alerts_settings
+        st.session_state.signals_settings = signals_settings
         st.session_state.settings_saved = True
         st.success("✅ Settings saved successfully!")
     else:
