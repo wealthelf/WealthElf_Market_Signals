@@ -22,7 +22,7 @@ if 'alerts_settings' not in st.session_state:
             'sort_ascending': True,
             'selected_columns': [],
             'filters': {},
-            'max_rows': 200 # Added max_rows
+            
         }
 
 def save_current_settings():
@@ -38,7 +38,7 @@ def save_current_settings():
         'sort_ascending': st.session_state.get('sort_ascending', True),
         'selected_columns': st.session_state.get('column_selector', []),
         'filters': st.session_state.get('current_filters', {}),
-        'max_rows': st.session_state.get('max_rows', 200) # Added max_rows
+        
     }
 
     st.session_state.alerts_settings.update(current_settings)
@@ -52,10 +52,14 @@ def display_alerts_page():
     render_navigation('alerts')
 
     # App header with title
-    col1, col2 = st.columns([4, 1])
+    col1, col2, col3 = st.columns([3, 1, 1])
     with col1:
         st.title("Market Alerts")
     with col2:
+        if st.button("🔄 Refresh Data"):
+            st.cache_data.clear()
+            st.success("Data cache cleared! Loading fresh data...")
+    with col3:
         st.button("💾 Save Current Settings", on_click=save_current_settings)
 
     st.markdown("---")
@@ -90,9 +94,8 @@ def display_alerts_page():
         help="Enter end column letter (e.g., Z)"
     ).upper()
 
-    # Row range configuration with max rows limit
+    # Row range configuration
     st.sidebar.subheader("Row Range")
-    max_rows = st.session_state.alerts_settings.get('max_rows', 200)
     start_row = st.sidebar.number_input(
         "Start Row",
         min_value=1,
@@ -102,24 +105,14 @@ def display_alerts_page():
     )
     end_row = st.sidebar.number_input(
         "End Row",
-        min_value=1,
-        value=min(start_row + max_rows - 1, st.session_state.alerts_settings['end_row']),
+        min_value=start_row,
+        value=st.session_state.alerts_settings['end_row'],
         key="end_row",
-        help=f"Enter end row number (max {max_rows} rows)"
+        help="Enter end row number"
     )
-
-    # Enforce max rows limit
-    if end_row - start_row + 1 > max_rows:
-        end_row = start_row + max_rows - 1
-        st.warning(f"Row range limited to {max_rows} rows as per settings")
 
     # Create range with proper format
     range_name = f"'{sheet_name}'!{start_col}{start_row}:{end_col}{end_row}"
-
-    # Manual refresh button
-    if st.sidebar.button("🔄 Refresh Data"):
-        st.cache_data.clear()
-        st.success("Data cache cleared! Loading fresh data...")
 
     # Load data
     if spreadsheet_id and sheet_name:

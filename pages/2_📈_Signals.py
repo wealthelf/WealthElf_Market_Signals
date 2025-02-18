@@ -79,10 +79,14 @@ def display_signals_page():
         render_navigation('signals')
 
         # App header with title
-        col1, col2 = st.columns([4, 1])
+        col1, col2, col3 = st.columns([3, 1, 1])
         with col1:
             st.title("Market Signals")
         with col2:
+            if st.button("🔄 Refresh Data"):
+                st.cache_data.clear()
+                st.success("Data cache cleared! Loading fresh data...")
+        with col3:
             st.button("💾 Save Current Settings", on_click=save_current_settings)
 
         st.markdown("---")
@@ -126,9 +130,8 @@ def display_signals_page():
             help="Enter end column letter (e.g., U)"
         ).upper()
 
-        # Row range configuration with max rows limit
+        # Row range configuration
         st.sidebar.subheader("Row Range")
-        max_rows = st.session_state.signals_settings.get('max_rows', 200)
         start_row = st.sidebar.number_input(
             "Start Row",
             min_value=1,
@@ -138,16 +141,16 @@ def display_signals_page():
         )
         end_row = st.sidebar.number_input(
             "End Row",
-            min_value=1,
-            value=min(start_row + max_rows - 1, st.session_state.signals_settings['end_row']),
+            min_value=start_row,
+            value=st.session_state.signals_settings['end_row'],
             key="end_row",
-            help=f"Enter end row number (max {max_rows} rows)"
+            help="Enter end row number"
         )
 
-        # Enforce max rows limit
-        if end_row - start_row + 1 > max_rows:
-            end_row = start_row + max_rows - 1
-            st.warning(f"Row range limited to {max_rows} rows as per settings")
+        # Create range with proper format
+        range_name = create_range_string(sheet_name, start_col, end_col, start_row, end_row)
+        if not range_name:
+            return
 
         # Import market symbols button
         if st.sidebar.button("📥 Import Market Symbols"):
@@ -167,21 +170,17 @@ def display_signals_page():
             st.error(f"Invalid input: {error_message}")
             return
 
-        # Create range with proper format
-        range_name = create_range_string(sheet_name, start_col, end_col, start_row, end_row)
-        if not range_name:
-            return
 
         # Manual refresh button
-        if st.sidebar.button("🔄 Refresh Data"):
-            st.cache_data.clear()
-            st.success("Data cache cleared! Loading fresh data...")
+        #This is now handled in the header.  Leaving it commented out to avoid errors.
+        # if st.sidebar.button("🔄 Refresh Data"):
+        #     st.cache_data.clear()
+        #     st.success("Data cache cleared! Loading fresh data...")
 
         # Load data
         if spreadsheet_id and sheet_name:
             with st.spinner("Loading data..."):
                 try:
-                    st.write(f"Debug - Range string: {range_name}")  # Debug output
                     df = load_sheet_data(spreadsheet_id, range_name)
 
                     if df is not None and not df.empty:
