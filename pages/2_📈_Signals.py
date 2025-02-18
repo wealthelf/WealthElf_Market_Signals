@@ -83,7 +83,7 @@ def display_signals_page():
         "End Column",
         value=st.session_state.signals_settings['end_col'],
         key="end_col",
-        help="Enter end column letter (e.g., Z)"
+        help="Enter end column letter (e.g., U)"
     ).upper()
 
     # Row range configuration

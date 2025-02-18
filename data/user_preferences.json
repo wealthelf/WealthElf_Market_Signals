@@ -84,14 +84,12 @@
     "spreadsheet_id": "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
     "start_row": 1,
     "end_row": 1000,
-    "sort_by": "",
+    "sort_by": "Ticker",
     "sort_ascending": true,
     "selected_columns": [
-      "17/02/2025",
-      "47 - TPI Slope",
-      "Current Signal",
-      "TPI",
-      "Last Signal Rank - Overall",
+      "Ticker",
+      "Name",
+      "Current TPI Signal",
       "Last TPI Flip",
       "Before Last TPI Flip",
       "1M Momentum",
@@ -100,15 +98,84 @@
       "Quad for this Qtr",
       "Quad for next Qtr",
       "Quad for Qtr +2",
-      "Quad for Quarter +3",
+      "TPI -7",
+      "TPI -6",
+      "TPI -5",
+      "TPI -4",
+      "TPI -3",
+      "TPI -2",
+      "TPI -1",
+      "TPI Latest",
       "TPI Slope",
       "TPI MA"
     ],
     "filters": {
       "Ticker": "",
-      "Name": [],
-      "Description": [],
-      "Date": ""
+      "Name": "[]",
+      "Current TPI Signal": [
+        -100.0,
+        100.0
+      ],
+      "Last TPI Flip": [],
+      "Before Last TPI Flip": [],
+      "1M Momentum": [],
+      "Quad Territory": "",
+      "Quad for Last Qtr": [
+        1.0,
+        4.0
+      ],
+      "Quad for this Qtr": [
+        1.0,
+        4.0
+      ],
+      "Quad for next Qtr": [
+        2.0,
+        3.0
+      ],
+      "Quad for Qtr +2": [
+        1.0,
+        3.0
+      ],
+      "TPI -7": [
+        -100.0,
+        100.0
+      ],
+      "TPI -6": [
+        -100.0,
+        100.0
+      ],
+      "TPI -5": [
+        -100.0,
+        100.0
+      ],
+      "TPI -4": [
+        -100.0,
+        100.0
+      ],
+      "TPI -3": [
+        -100.0,
+        100.0
+      ],
+      "TPI -2": [
+        -100.0,
+        100.0
+      ],
+      "TPI -1": [
+        -100.0,
+        100.0
+      ],
+      "TPI Latest": [
+        -100.0,
+        100.0
+      ],
+      "TPI Slope": [
+        -26.0,
+        22.0
+      ],
+      "TPI MA": [
+        -98.0,
+        100.0
+      ]
     },
     "sheet_name": "SIGNALS",
     "start_col": "A",
