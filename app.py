@@ -17,49 +17,63 @@ with col2:
 
 st.markdown("---")
 
+# Create three columns for the icons
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    alerts_clicked = st.button(
+        "📊 Alerts",
+        use_container_width=True,
+        help="View and manage market alerts"
+    )
+
+with col2:
+    signals_clicked = st.button(
+        "📈 Signals",
+        use_container_width=True,
+        help="Monitor market signals"
+    )
+
+with col3:
+    settings_clicked = st.button(
+        "⚙️ Settings",
+        use_container_width=True,
+        help="Configure application settings"
+    )
+
+# Welcome message with styling
 st.markdown("""
-## Welcome to WealthElf Market Signals!
+<div style='text-align: center; padding: 2rem;'>
+    <h1>Welcome to WealthElf Market Signals</h1>
+    <p style='font-size: 1.2rem;'>
+        Your comprehensive platform for market insights and real-time signals.
+    </p>
+    <p style='font-size: 1.1rem;'>
+        Click on any of the icons above to get started:
+    </p>
+    <ul style='list-style-type: none;'>
+        <li>📊 <b>Alerts</b> - Track and manage market alerts</li>
+        <li>📈 <b>Signals</b> - Monitor real-time market signals</li>
+        <li>⚙️ <b>Settings</b> - Configure your preferences</li>
+    </ul>
+</div>
+""", unsafe_allow_html=True)
 
-This application provides real-time market signals and alerts from our Google Sheets data source.
-
-### Available Pages:
-
-1. **📊 Alerts**: View and track market alerts
-   - Filter and sort alerts
-   - Customize column visibility
-   - Save your preferred view settings
-
-2. **📈 Signals**: Monitor market signals
-   - Track different signal types
-   - Apply custom filters
-   - Sort and organize your view
-
-Use the sidebar to navigate between pages and access different features.
-""")
-
-# Display some basic statistics or recent updates if available
-st.sidebar.markdown("### Quick Navigation")
-st.sidebar.info("""
-Select a page from the sidebar above to:
-- View Market Alerts
-- Monitor Market Signals
-""")
-
-selected_page = st.sidebar.radio("Select a page", ["Alerts", "Signals"])
-
-if selected_page == "Alerts":
+# Handle navigation
+if alerts_clicked:
     try:
-        page = importlib.import_module("pages.1_📊_Alerts") # Adjusted import path
+        page = importlib.import_module("pages.1_📊_Alerts")
         page.display_alerts_page()
     except ImportError:
         st.error("Error importing Alerts page. Check pages/1_📊_Alerts.py")
-elif selected_page == "Signals":
+elif signals_clicked:
     try:
-        page = importlib.import_module("pages.page2_signals")  
-        page.display_signals_page()  
+        page = importlib.import_module("pages.2_📈_Signals")
+        page.display_signals_page()
     except ImportError:
-        st.error("Error importing Signals page. Check pages/page2_signals.py")
-
+        st.error("Error importing Signals page. Check pages/2_📈_Signals.py")
+elif settings_clicked:
+    st.info("Settings page is under development")
 
 if __name__ == "__main__":
     pass
