@@ -10,11 +10,13 @@ def display_settings_page():
         st.session_state.settings_saved = False
 
     # App header with logo and title
-    col1, col2 = st.columns([1, 4])
+    col1, col2, col3 = st.columns([1, 3, 1])
     with col1:
         st.image("attached_assets/9Box favicon.png", width=100)
     with col2:
         st.title("Application Settings")
+    with col3:
+        st.button("💾 Save Current Settings", on_click=save_current_settings)
 
     st.markdown("---")
 
@@ -75,35 +77,6 @@ def display_settings_page():
             help="Enter end column letter (e.g., AW)"
         ).upper()
 
-    # Save Settings Button
-    if st.button("💾 Save Settings", type="primary", key="save_settings"):
-        # Update settings with new values
-        new_alerts_settings = st.session_state.alerts_settings.copy()
-        new_alerts_settings.update({
-            'sheet_name': alerts_sheet,
-            'start_col': alerts_start_col,
-            'end_col': alerts_end_col
-        })
-
-        new_signals_settings = st.session_state.signals_settings.copy()
-        new_signals_settings.update({
-            'sheet_name': signals_sheet,
-            'start_col': signals_start_col,
-            'end_col': signals_end_col
-        })
-
-        # Save both settings
-        alerts_saved = save_settings(new_alerts_settings, 'alerts')
-        signals_saved = save_settings(new_signals_settings, 'signals')
-
-        if alerts_saved and signals_saved:
-            st.session_state.alerts_settings = new_alerts_settings
-            st.session_state.signals_settings = new_signals_settings
-            st.session_state.settings_saved = True
-            st.success("✅ Settings saved successfully!")
-        else:
-            st.error("❌ Failed to save settings")
-
     # Display current settings info
     st.sidebar.markdown("---")
     st.sidebar.subheader("Current Settings")
@@ -116,6 +89,36 @@ def display_settings_page():
         - Sheet: {signals_sheet}
         - Columns: {signals_start_col} to {signals_end_col}
     """)
+
+
+def save_current_settings():
+    new_alerts_settings = st.session_state.alerts_settings.copy()
+    new_alerts_settings.update({
+        'sheet_name': st.session_state.alerts_sheet_name,
+        'start_col': st.session_state.alerts_start_col,
+        'end_col': st.session_state.alerts_end_col
+    })
+
+    new_signals_settings = st.session_state.signals_settings.copy()
+    new_signals_settings.update({
+        'sheet_name': st.session_state.signals_sheet_name,
+        'start_col': st.session_state.signals_start_col,
+        'end_col': st.session_state.signals_end_col
+    })
+
+    # Save both settings
+    alerts_saved = save_settings(new_alerts_settings, 'alerts')
+    signals_saved = save_settings(new_signals_settings, 'signals')
+
+    if alerts_saved and signals_saved:
+        st.session_state.alerts_settings = new_alerts_settings
+        st.session_state.signals_settings = new_signals_settings
+        st.session_state.settings_saved = True
+        st.success("✅ Settings saved successfully!")
+    else:
+        st.error("❌ Failed to save settings")
+
+
 
 if __name__ == "__main__":
     display_settings_page()

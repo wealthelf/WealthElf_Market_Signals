@@ -26,25 +26,20 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
             **base_settings,
             'sheet_name': 'ALERTS',
             'start_col': 'A',
-            'end_col': 'D'  # Default end column for Alerts
+            'end_col': 'D'  # Fixed end column for Alerts
         }
     elif page == 'signals':
         return {
             **base_settings,
             'sheet_name': 'Dashboard-ETFs-Sort',
             'start_col': 'A',
-            'end_col': 'AW'  # Default end column for Signals
+            'end_col': 'AW'  # Fixed end column for Signals
         }
 
-    return {
-        **base_settings,
-        'sheet_name': 'Sheet1',
-        'start_col': 'A',
-        'end_col': 'Z'
-    }
+    return base_settings
 
 def load_settings(page: str = "") -> Dict[str, Any]:
-    """Load settings from JSON file."""
+    """Load settings from JSON file, ensuring defaults are properly applied."""
     ensure_settings_directory()
     defaults = get_default_settings(page)
 
@@ -53,11 +48,11 @@ def load_settings(page: str = "") -> Dict[str, Any]:
             with open(SETTINGS_FILE, 'r') as f:
                 all_settings = json.load(f)
                 if page:
-                    # Start with defaults and update with saved settings
                     saved_settings = all_settings.get(page, {})
-                    if saved_settings:
-                        defaults.update(saved_settings)
-                    return defaults
+                    # Always start with defaults and update with saved settings
+                    settings = defaults.copy()
+                    settings.update(saved_settings)
+                    return settings
                 return all_settings.get('default', defaults)
         return defaults
     except Exception as e:
@@ -65,7 +60,7 @@ def load_settings(page: str = "") -> Dict[str, Any]:
         return defaults
 
 def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
-    """Save settings to JSON file."""
+    """Save settings while preserving defaults."""
     ensure_settings_directory()
     try:
         # Load existing settings
@@ -74,15 +69,17 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
             with open(SETTINGS_FILE, 'r') as f:
                 all_settings = json.load(f)
 
-        # Ensure we preserve the structure with defaults
+        # Ensure we preserve defaults when saving
         if page:
             defaults = get_default_settings(page)
-            defaults.update(settings)  # Merge with provided settings
-            all_settings[page] = defaults
+            current_settings = defaults.copy()
+            current_settings.update(settings)
+            all_settings[page] = current_settings
         else:
             defaults = get_default_settings()
-            defaults.update(settings)
-            all_settings['default'] = defaults
+            current_settings = defaults.copy()
+            current_settings.update(settings)
+            all_settings['default'] = current_settings
 
         # Save all settings
         with open(SETTINGS_FILE, 'w') as f:
