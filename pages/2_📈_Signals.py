@@ -12,9 +12,9 @@ if 'signals_settings' not in st.session_state:
         # Set default values if no settings are loaded
         st.session_state.signals_settings = {
             'spreadsheet_id': "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
-            'sheet_name': "Dashboard-ETFs-Sort",
+            'sheet_name': "SIGNALS",
             'start_col': "A",
-            'end_col': "Z",
+            'end_col': "U",
             'start_row': 1,
             'end_row': 1000,
             'sort_by': "",
@@ -22,9 +22,6 @@ if 'signals_settings' not in st.session_state:
             'selected_columns': [],
             'filters': {}
         }
-
-# Set settings for the current session
-st.session_state.settings = st.session_state.signals_settings
 
 def save_current_settings():
     """Save current input values as default settings"""
@@ -63,13 +60,13 @@ def display_signals_page():
     st.sidebar.header("Sheet Configuration")
     spreadsheet_id = st.sidebar.text_input(
         "Spreadsheet ID",
-        value=st.session_state.settings['spreadsheet_id'],
+        value=st.session_state.signals_settings['spreadsheet_id'],
         key="spreadsheet_id",
         help="Enter the ID from your Google Sheets URL"
     )
     sheet_name = st.sidebar.text_input(
         "Sheet Name",
-        value=st.session_state.settings['sheet_name'],
+        value=st.session_state.signals_settings['sheet_name'],
         key="sheet_name",
         help="Enter the name of the sheet (e.g., Signals)"
     )
@@ -78,13 +75,13 @@ def display_signals_page():
     st.sidebar.subheader("Column Range")
     start_col = st.sidebar.text_input(
         "Start Column",
-        value=st.session_state.settings['start_col'],
+        value=st.session_state.signals_settings['start_col'],
         key="start_col",
         help="Enter start column letter (e.g., A)"
     ).upper()
     end_col = st.sidebar.text_input(
         "End Column",
-        value=st.session_state.settings['end_col'],
+        value=st.session_state.signals_settings['end_col'],
         key="end_col",
         help="Enter end column letter (e.g., Z)"
     ).upper()
@@ -94,14 +91,14 @@ def display_signals_page():
     start_row = st.sidebar.number_input(
         "Start Row",
         min_value=1,
-        value=st.session_state.settings['start_row'],
+        value=st.session_state.signals_settings['start_row'],
         key="start_row",
         help="Enter start row number"
     )
     end_row = st.sidebar.number_input(
         "End Row",
         min_value=1,
-        value=st.session_state.settings['end_row'],
+        value=st.session_state.signals_settings['end_row'],
         key="end_row",
         help="Enter end row number"
     )
@@ -135,8 +132,8 @@ def display_signals_page():
 
                     sort_by, ascending = render_sort_controls(
                         df,
-                        default_sort=st.session_state.settings['sort_by'],
-                        default_ascending=st.session_state.settings['sort_ascending']
+                        default_sort=st.session_state.signals_settings['sort_by'],
+                        default_ascending=st.session_state.signals_settings['sort_ascending']
                     )
 
                     # Apply operations

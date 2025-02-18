@@ -110,8 +110,8 @@
       "Description": [],
       "Date": ""
     },
-    "sheet_name": "Dashboard-ETFs-Sort",
+    "sheet_name": "SIGNALS",
     "start_col": "A",
-    "end_col": "AW"
+    "end_col": "U"
   }
 }
