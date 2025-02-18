@@ -15,7 +15,7 @@ def render_data_table(df, selected_columns):
     st.dataframe(
         df_display,
         use_container_width=True,
-        height=400
+        height=800  # Increased from 400 to 800 to show more rows
     )
 
 def column_selector(df):
@@ -30,5 +30,5 @@ def column_selector(df):
         default=all_columns,
         key="column_selector"
     )
-    
+
     return selected_columns
