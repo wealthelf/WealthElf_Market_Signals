@@ -6,6 +6,12 @@ from utils.database import import_market_symbols_from_file, load_market_symbols
 from components.data_table import render_data_table, column_selector
 from components.filters import render_filters, render_sort_controls
 from components.navigation import render_navigation
+from utils.auth import is_logged_in
+
+# Check authentication first
+if not is_logged_in():
+    st.error("Please log in to access this page")
+    st.stop()
 
 # Initialize session state for persistent settings
 if 'signals_settings' not in st.session_state:

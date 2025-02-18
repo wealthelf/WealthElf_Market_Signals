@@ -5,6 +5,7 @@ from utils.settings_manager import load_settings, save_settings
 from components.data_table import render_data_table, column_selector
 from components.filters import render_filters, render_sort_controls
 from components.navigation import render_navigation
+from utils.auth import is_logged_in
 import pandas as pd
 
 # Initialize session state for persistent settings
@@ -67,6 +68,11 @@ def save_current_settings():
         return False
 
 def display_alerts_page():
+    # Check authentication first
+    if not is_logged_in():
+        st.error("Please log in to access this page")
+        st.stop()
+
     # Add navigation at the top
     render_navigation('alerts')
 
