@@ -48,7 +48,9 @@ def load_settings(page: str = "") -> Dict[str, Any]:
     """Load user-specific settings from database."""
     defaults = get_default_settings(page)
 
-    if not st.session_state.get('user_id'):
+    # Ensure user is logged in
+    user_id = st.session_state.get('user_id')
+    if not user_id:
         return defaults
 
     conn = get_db_connection()
@@ -58,11 +60,12 @@ def load_settings(page: str = "") -> Dict[str, Any]:
             SELECT settings
             FROM user_preferences
             WHERE user_id = %s AND page = %s
-        """, (st.session_state.user_id, page))
+        """, (user_id, page))
         result = cursor.fetchone()
 
-        if result and result[0]:
-            saved_settings = result[0]
+        if result:
+            # Extract settings from the result and update defaults
+            saved_settings = result[0] if isinstance(result[0], dict) else json.loads(result[0])
             settings = defaults.copy()
             settings.update(saved_settings)
             return settings
@@ -75,7 +78,9 @@ def load_settings(page: str = "") -> Dict[str, Any]:
 
 def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
     """Save user-specific settings to database."""
-    if not st.session_state.get('user_id'):
+    # Ensure user is logged in
+    user_id = st.session_state.get('user_id')
+    if not user_id:
         st.warning("Please log in to save settings.")
         return False
 
@@ -99,7 +104,7 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
                 settings = EXCLUDED.settings,
                 updated_at = CURRENT_TIMESTAMP
             RETURNING user_id
-        """, (st.session_state.user_id, page, settings_json))
+        """, (user_id, page, settings_json))
 
         result = cursor.fetchone()
         conn.commit()
