@@ -18,12 +18,18 @@ if 'settings_initialized' not in st.session_state:
     st.session_state.settings_initialized = True
     st.session_state.current_page = None
 
-# App header with logo and title
-col1, col2 = st.columns([1, 4])
+# App header with logo and title in consistent layout
+col1, col2, col3, col4 = st.columns([1, 3, 1, 1])
 with col1:
     st.image("attached_assets/9Box favicon.png", width=100)
 with col2:
     st.title("WealthElf Market Signals")
+with col3:
+    if st.button("🔄 Refresh Data"):
+        st.cache_data.clear()
+        st.success("Data cache cleared! Loading fresh data...")
+with col4:
+    st.button("💾 Save Settings")
 
 # Render login form in sidebar
 is_authenticated = render_login_form()
