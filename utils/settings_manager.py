@@ -15,7 +15,7 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
     base_settings = {
         'spreadsheet_id': "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
         'start_row': 1,
-        'end_row': 1000,
+        'end_row': 200,  # Changed default to 200 rows
         'sort_by': "",
         'sort_ascending': True,
         'selected_columns': [],
@@ -27,14 +27,16 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
             **base_settings,
             'sheet_name': 'ALERTS',
             'start_col': 'A',
-            'end_col': 'D'  # Fixed end column for Alerts
+            'end_col': 'D',  # Fixed end column for Alerts
+            'max_rows': 200  # New setting for max rows
         }
     elif page == 'signals':
         return {
             **base_settings,
-            'sheet_name': 'SIGNALS',  # Updated sheet name
+            'sheet_name': 'SIGNALS',
             'start_col': 'A',
-            'end_col': 'U'  # Updated end column for Signals
+            'end_col': 'U',  # Updated end column for Signals
+            'max_rows': 200  # New setting for max rows
         }
 
     return base_settings

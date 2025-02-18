@@ -21,7 +21,8 @@ if 'signals_settings' not in st.session_state:
             'sort_by': "",
             'sort_ascending': True,
             'selected_columns': [],
-            'filters': {}
+            'filters': {},
+            'max_rows': 200 # Added max_rows to default settings
         }
 
 def save_current_settings():
@@ -36,7 +37,9 @@ def save_current_settings():
         'sort_by': st.session_state.get('sort_by', ""),
         'sort_ascending': st.session_state.get('sort_ascending', True),
         'selected_columns': st.session_state.get('column_selector', []),
-        'filters': st.session_state.get('current_filters', {})
+        'filters': st.session_state.get('current_filters', {}),
+        'max_rows': st.session_state.get('max_rows', 200) # Added max_rows to saved settings
+
     }
 
     st.session_state.signals_settings.update(current_settings)
@@ -119,8 +122,9 @@ def display_signals_page():
             help="Enter end column letter (e.g., U)"
         ).upper()
 
-        # Row range configuration
+        # Row range configuration with max rows limit
         st.sidebar.subheader("Row Range")
+        max_rows = st.session_state.signals_settings.get('max_rows', 200)
         start_row = st.sidebar.number_input(
             "Start Row",
             min_value=1,
@@ -131,10 +135,15 @@ def display_signals_page():
         end_row = st.sidebar.number_input(
             "End Row",
             min_value=1,
-            value=st.session_state.signals_settings['end_row'],
+            value=min(start_row + max_rows - 1, st.session_state.signals_settings['end_row']),
             key="end_row",
-            help="Enter end row number"
+            help=f"Enter end row number (max {max_rows} rows)"
         )
+
+        # Enforce max rows limit
+        if end_row - start_row + 1 > max_rows:
+            end_row = start_row + max_rows - 1
+            st.warning(f"Row range limited to {max_rows} rows as per settings")
 
         # Import market symbols button
         if st.sidebar.button("📥 Import Market Symbols"):
