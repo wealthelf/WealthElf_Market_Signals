@@ -1,4 +1,5 @@
 import streamlit as st
+from utils.auth import logout_user
 
 def render_navigation(current_page=None):
     """Render navigation buttons."""
@@ -23,6 +24,14 @@ def render_navigation(current_page=None):
             background-color: #F0F2F6;
             border-color: #919191;
         }
+        .logout-button {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            text-align: center;
+        }
         </style>
         """,
         unsafe_allow_html=True
@@ -41,3 +50,10 @@ def render_navigation(current_page=None):
 
     # Add a separator below navigation
     st.markdown("---")
+
+    # Add logout button at the bottom
+    st.markdown('<div class="logout-button">', unsafe_allow_html=True)
+    if st.button("🚪 Logout", key="logout_button"):
+        logout_user()
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
