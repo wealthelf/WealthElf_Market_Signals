@@ -46,20 +46,21 @@ def load_settings(page: str = "") -> Dict[str, Any]:
     defaults = get_default_settings(page)
 
     if not st.session_state.get('user_id'):
+        st.warning("Please log in to access your settings.")
         return defaults
 
     conn = get_db_connection()
     try:
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT settings
+            SELECT settings::json
             FROM user_preferences
             WHERE user_id = %s AND page = %s
         """, (st.session_state.user_id, page))
         result = cursor.fetchone()
 
-        if result and result['settings']:
-            saved_settings = result['settings']
+        if result and result[0]:  # Access first column of result tuple
+            saved_settings = result[0]  # This will be the JSON settings
             settings = defaults.copy()
             settings.update(saved_settings)
             return settings
@@ -87,6 +88,18 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
 
         # Ensure the settings are properly serialized
         settings_json = json.dumps(settings)
+
+        # Create the table if it doesn't exist
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS user_preferences (
+                user_id INTEGER NOT NULL,
+                page VARCHAR(50) NOT NULL,
+                settings JSONB NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (user_id, page)
+            )
+        """)
 
         cursor.execute("""
             INSERT INTO user_preferences (user_id, page, settings)
