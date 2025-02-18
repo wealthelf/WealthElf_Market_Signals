@@ -67,14 +67,6 @@ if is_authenticated:
             <p style='font-size: 1.2rem;'>
                 Your comprehensive platform for market insights and real-time signals.
             </p>
-            <p style='font-size: 1.1rem;'>
-                Click on any of the icons above to get started:
-            </p>
-            <ul style='list-style-type: none;'>
-                <li>📊 <b>Alerts</b> - Track and manage market alerts</li>
-                <li>📈 <b>Signals</b> - Monitor real-time market signals</li>
-                <li>⚙️ <b>Settings</b> - Configure your preferences</li>
-            </ul>
         </div>
         """, unsafe_allow_html=True)
 else:
