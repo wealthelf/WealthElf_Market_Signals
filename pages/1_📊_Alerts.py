@@ -26,16 +26,29 @@ if 'alerts_settings' not in st.session_state:
         }
 
 def process_datetime_columns(df):
-    """Split datetime column into date and time columns."""
+    """Split datetime column into date and time columns while keeping original."""
     if 'Date' in df.columns:
         # Convert to datetime
         df['Date'] = pd.to_datetime(df['Date'])
         # Create new date and time columns
         df['Date_Only'] = df['Date'].dt.strftime('%Y-%m-%d')
         df['Time'] = df['Date'].dt.strftime('%H:%M:%S')
-        # Drop original Date column
+        # Keep original Date column but move it to the end
+        date_col = df['Date']
         df = df.drop('Date', axis=1)
+        df['Date'] = date_col
     return df
+
+def filter_dataframe(df, filters):
+    """Apply filters to dataframe"""
+    filtered_df = df.copy()
+    for column, filter_value in filters.items():
+        if filter_value:
+            if pd.api.types.is_numeric_dtype(df[column]):
+                filtered_df = filtered_df[filtered_df[column] == float(filter_value)]
+            else:
+                filtered_df = filtered_df[filtered_df[column].astype(str).str.contains(str(filter_value), case=False)]
+    return filtered_df
 
 def save_current_settings():
     """Save current input values as default settings"""
@@ -141,6 +154,9 @@ def display_alerts_page():
                 if df is not None and not df.empty:
                     # Process datetime columns
                     df = process_datetime_columns(df)
+
+                    # Convert all column names to string type for consistent filtering
+                    df.columns = df.columns.astype(str)
 
                     st.success("Data loaded successfully!")
 
