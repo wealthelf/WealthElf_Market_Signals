@@ -7,6 +7,7 @@ def render_filters(df):
         return {}
 
     filters = {}
+    saved_filters = st.session_state.settings.get('filters', {})
 
     with st.expander("Filters"):
         for column in df.columns:
@@ -16,9 +17,10 @@ def render_filters(df):
                 # Special handling for date columns
                 min_date = pd.to_datetime(df[column].min())
                 max_date = pd.to_datetime(df[column].max())
+                default_dates = saved_filters.get(column, (min_date, max_date))
                 filters[column] = st.date_input(
                     f"Filter {column}",
-                    value=(min_date, max_date),
+                    value=default_dates,
                     key=f"{col_key}_date"
                 )
             elif pd.api.types.is_numeric_dtype(df[column]):
@@ -26,11 +28,12 @@ def render_filters(df):
                 try:
                     min_val = float(df[column].min())
                     max_val = float(df[column].max())
+                    default_range = saved_filters.get(column, (min_val, max_val))
                     filters[column] = st.slider(
                         f"Filter {column}",
                         min_val,
                         max_val,
-                        (min_val, max_val),
+                        default_range,
                         key=f"{col_key}_numeric"
                     )
                 except:
@@ -39,16 +42,18 @@ def render_filters(df):
                 # Handle text columns
                 unique_values = df[column].unique()
                 if len(unique_values) < 10:  # Use select box for columns with few unique values
+                    default_selection = saved_filters.get(column, [])
                     filters[column] = st.multiselect(
                         f"Filter {column}",
                         options=[""] + list(unique_values),
-                        default=[],
+                        default=default_selection,
                         key=f"{col_key}_select"
                     )
                 else:  # Use text input for columns with many unique values
+                    default_text = saved_filters.get(column, "")
                     filters[column] = st.text_input(
                         f"Filter {column}",
-                        "",
+                        value=default_text,
                         key=f"{col_key}_text"
                     )
 

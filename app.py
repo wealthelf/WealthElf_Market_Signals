@@ -1,6 +1,7 @@
 import streamlit as st
 from utils.gsheets import load_sheet_data
 from utils.data_operations import filter_dataframe, sort_dataframe, select_columns
+from utils.settings_manager import load_settings, save_settings
 from components.data_table import render_data_table, column_selector
 from components.filters import render_filters, render_sort_controls
 
@@ -12,21 +13,11 @@ st.set_page_config(
 
 # Initialize session state for persistent settings
 if 'settings' not in st.session_state:
-    st.session_state.settings = {
-        'spreadsheet_id': "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
-        'sheet_name': "Sheet1",
-        'start_col': "A",
-        'end_col': "Z",
-        'start_row': 1,
-        'end_row': 1000,
-        'sort_by': "",
-        'sort_ascending': True,
-        'selected_columns': []
-    }
+    st.session_state.settings = load_settings()
 
 def save_current_settings():
     """Save current input values as default settings"""
-    st.session_state.settings.update({
+    current_settings = {
         'spreadsheet_id': st.session_state.spreadsheet_id,
         'sheet_name': st.session_state.sheet_name,
         'start_col': st.session_state.start_col,
@@ -34,18 +25,28 @@ def save_current_settings():
         'start_row': st.session_state.start_row,
         'end_row': st.session_state.end_row,
         'sort_by': st.session_state.sort_by,
-        'sort_ascending': st.session_state.sort_ascending
-    })
-    st.success("Settings saved as default!")
+        'sort_ascending': st.session_state.sort_ascending,
+        'selected_columns': st.session_state.get('column_selector', []),
+        'filters': st.session_state.get('current_filters', {})
+    }
+
+    st.session_state.settings.update(current_settings)
+    if save_settings(st.session_state.settings):
+        st.success("Settings saved successfully!")
+    else:
+        st.error("Failed to save settings")
 
 def main():
     # App header with logo and title
-    col1, col2 = st.columns([1, 4])
+    col1, col2, col3 = st.columns([1, 3, 1])
     with col1:
         st.image("attached_assets/9Box favicon.png", width=100)
     with col2:
         st.title("WealthElf Market Signals")
-        st.markdown("---")
+    with col3:
+        st.button("💾 Save Current Settings", on_click=save_current_settings)
+
+    st.markdown("---")
 
     # Sidebar for sheet configuration
     st.sidebar.header("Sheet Configuration")
@@ -94,10 +95,6 @@ def main():
         help="Enter end row number"
     )
 
-    # Save settings button
-    if st.sidebar.button("💾 Save as Default Settings"):
-        save_current_settings()
-
     # Create range with proper format
     range_name = f"'{sheet_name}'!{start_col}{start_row}:{end_col}{end_row}"
 
@@ -122,6 +119,9 @@ def main():
                     # Filtering and sorting
                     st.subheader("Data Controls")
                     filters = render_filters(df)
+                    # Store current filters in session state
+                    st.session_state.current_filters = filters
+
                     sort_by, ascending = render_sort_controls(
                         df,
                         default_sort=st.session_state.settings['sort_by'],
