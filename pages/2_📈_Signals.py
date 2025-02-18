@@ -80,12 +80,12 @@ def display_signals_page():
         with col1:
             st.title("Market Signals")
         with col2:
-            if st.button("💾 Save Current Settings", on_click=save_current_settings):
-                pass #This button now exists in the header.  Leaving it here avoids errors.
-        with col3:
             if st.button("🔄 Refresh Data"):
                 st.cache_data.clear()
                 st.success("Data cache cleared! Loading fresh data...")
+        with col3:
+            if st.button("💾 Save Settings", key="save_settings_signals"):
+                save_current_settings()
 
         st.markdown("---")
 

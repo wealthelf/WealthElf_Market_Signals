@@ -4,7 +4,7 @@ from utils.data_operations import filter_dataframe, sort_dataframe, select_colum
 from utils.settings_manager import load_settings, save_settings
 from components.data_table import render_data_table, column_selector
 from components.filters import render_filters, render_sort_controls
-from components.navigation import render_navigation # Added import
+from components.navigation import render_navigation
 
 # Initialize session state for persistent settings
 if 'alerts_settings' not in st.session_state:
@@ -22,7 +22,6 @@ if 'alerts_settings' not in st.session_state:
             'sort_ascending': True,
             'selected_columns': [],
             'filters': {},
-            
         }
 
 def save_current_settings():
@@ -38,7 +37,6 @@ def save_current_settings():
         'sort_ascending': st.session_state.get('sort_ascending', True),
         'selected_columns': st.session_state.get('column_selector', []),
         'filters': st.session_state.get('current_filters', {}),
-        
     }
 
     st.session_state.alerts_settings.update(current_settings)
@@ -60,7 +58,8 @@ def display_alerts_page():
             st.cache_data.clear()
             st.success("Data cache cleared! Loading fresh data...")
     with col3:
-        st.button("💾 Save Current Settings", on_click=save_current_settings)
+        if st.button("💾 Save Settings", key="save_settings_alerts"):
+            save_current_settings()
 
     st.markdown("---")
 
