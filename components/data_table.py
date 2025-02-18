@@ -53,9 +53,16 @@ def apply_conditional_formatting(df):
         return styles
 
     # Apply conditional formatting and center alignment
-    return df.style.apply(style_function, axis=None).set_properties(**{
-        'text-align': 'center'
+    styled_df = df.style.apply(style_function, axis=None)
+
+    # Apply center alignment to ALL cells
+    styled_df = styled_df.set_properties(**{
+        'text-align': 'center',
+        'white-space': 'pre',
+        'vertical-align': 'middle'
     })
+
+    return styled_df
 
 def render_data_table(df, selected_columns):
     """Render interactive data table with selected columns and conditional formatting."""
