@@ -1,7 +1,11 @@
 import streamlit as st
 from utils.settings_manager import load_settings, save_settings
+from components.navigation import render_navigation
 
 def display_settings_page():
+    # Add navigation at the top
+    render_navigation('settings')
+
     # Initialize session state for settings if not already done
     if 'settings_initialized' not in st.session_state:
         st.session_state.alerts_settings = load_settings('alerts')

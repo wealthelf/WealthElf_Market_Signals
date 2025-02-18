@@ -2,6 +2,7 @@ import streamlit as st
 from utils.settings_manager import load_settings
 import importlib
 from components.auth import render_login_form
+from components.navigation import render_navigation
 
 # Global page configuration
 st.set_page_config(
@@ -30,32 +31,8 @@ is_authenticated = render_login_form()
 if is_authenticated:
     st.markdown("---")
 
-    # Create three columns for the icons
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        if st.button(
-            "📊 Alerts",
-            use_container_width=True,
-            help="View and manage market alerts"
-        ):
-            st.session_state.current_page = 'alerts'
-
-    with col2:
-        if st.button(
-            "📈 Signals",
-            use_container_width=True,
-            help="Monitor market signals"
-        ):
-            st.session_state.current_page = 'signals'
-
-    with col3:
-        if st.button(
-            "⚙️ Settings",
-            use_container_width=True,
-            help="Configure application settings"
-        ):
-            st.session_state.current_page = 'settings'
+    # Render navigation
+    render_navigation(st.session_state.current_page)
 
     # Handle navigation based on session state
     if st.session_state.current_page == 'alerts':

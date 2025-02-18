@@ -4,6 +4,7 @@ from utils.data_operations import filter_dataframe, sort_dataframe, select_colum
 from utils.settings_manager import load_settings, save_settings
 from components.data_table import render_data_table, column_selector
 from components.filters import render_filters, render_sort_controls
+from components.navigation import render_navigation # Added import
 
 # Initialize session state for persistent settings
 if 'alerts_settings' not in st.session_state:
@@ -47,6 +48,9 @@ def save_current_settings():
         st.error("Failed to save settings")
 
 def display_alerts_page():
+    # Add navigation at the top
+    render_navigation('alerts')
+
     # App header with title
     col1, col2 = st.columns([4, 1])
     with col1:

@@ -5,6 +5,7 @@ from utils.settings_manager import load_settings, save_settings
 from utils.database import import_market_symbols_from_file, load_market_symbols
 from components.data_table import render_data_table, column_selector
 from components.filters import render_filters, render_sort_controls
+from components.navigation import render_navigation
 
 # Initialize session state for persistent settings
 if 'signals_settings' not in st.session_state:
@@ -74,6 +75,9 @@ def create_range_string(sheet_name, start_col, end_col, start_row, end_row):
 def display_signals_page():
     """Main function to display the signals page"""
     try:
+        # Add navigation at the top
+        render_navigation('signals')
+
         # App header with title
         col1, col2 = st.columns([4, 1])
         with col1:
