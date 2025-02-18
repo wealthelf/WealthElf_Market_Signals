@@ -11,62 +11,48 @@ def display_settings_page():
 
     st.markdown("---")
 
-    # General Settings Section
-    st.header("General Settings")
-    
-    # Default Sheet Configuration
-    st.subheader("Default Sheet Configuration")
-    default_spreadsheet_id = st.text_input(
-        "Default Spreadsheet ID",
-        value=st.session_state.get('default_spreadsheet_id', "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8"),
-        help="Enter the default Google Sheets ID to use across all pages"
+    # Alerts Configuration
+    st.header("Alerts Page Settings")
+    alerts_settings = load_settings('alerts')
+
+    # Default sheet configuration for Alerts
+    alerts_sheet = st.text_input(
+        "Default Sheet Name for Alerts",
+        value=alerts_settings.get('sheet_name', 'ALERTS'),
+        key="alerts_sheet_name",
+        help="Enter the default sheet name for Alerts page"
     )
 
-    # Theme Settings
-    st.subheader("Theme Settings")
-    theme = st.selectbox(
-        "Color Theme",
-        options=["Light", "Dark"],
-        index=0,
-        help="Select your preferred color theme"
-    )
+    # Signals Configuration
+    st.header("Signals Page Settings")
+    signals_settings = load_settings('signals')
 
-    # Data Display Settings
-    st.subheader("Data Display Settings")
-    rows_per_page = st.number_input(
-        "Rows per page",
-        min_value=10,
-        max_value=1000,
-        value=100,
-        step=10,
-        help="Number of rows to display per page in data tables"
+    # Default sheet configuration for Signals
+    signals_sheet = st.text_input(
+        "Default Sheet Name for Signals",
+        value=signals_settings.get('sheet_name', 'Dashboard-ETFs-Sort'),
+        key="signals_sheet_name",
+        help="Enter the default sheet name for Signals page"
     )
 
     # Save Settings Button
     if st.button("💾 Save Settings"):
-        settings = {
-            'default_spreadsheet_id': default_spreadsheet_id,
-            'theme': theme,
-            'rows_per_page': rows_per_page
-        }
-        
-        # Save to session state
-        for key, value in settings.items():
-            st.session_state[key] = value
-            
-        # Save to file
-        if save_settings(settings):
-            st.success("Settings saved successfully!")
-        else:
-            st.error("Failed to save settings")
+        # Update Alerts settings
+        alerts_settings['sheet_name'] = alerts_sheet
+        save_settings(alerts_settings, 'alerts')
+
+        # Update Signals settings
+        signals_settings['sheet_name'] = signals_sheet
+        save_settings(signals_settings, 'signals')
+
+        st.success("Settings saved successfully!")
 
     # Display current settings info
     st.sidebar.markdown("---")
     st.sidebar.subheader("Current Settings")
     st.sidebar.info(f"""
-        - Theme: {theme}
-        - Rows per page: {rows_per_page}
-        - Default Sheet ID: {default_spreadsheet_id[:20]}...
+        - Alerts Sheet: {alerts_sheet}
+        - Signals Sheet: {signals_sheet}
     """)
 
 if __name__ == "__main__":
