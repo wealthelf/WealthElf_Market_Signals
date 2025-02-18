@@ -49,7 +49,16 @@ def apply_conditional_formatting(df):
     def style_function(df):
         styles = pd.DataFrame('', index=df.index, columns=df.columns)
         for col in df.columns:
+            # Apply color formatting
             styles[col] = df[col].apply(lambda x: color_value(x, col))
+
+            # Add center alignment for all cells
+            styles[col] = styles[col].str.cat([' text-align: center;'] * len(df), na_rep='text-align: center;')
+
+            # Format Quad columns as integers
+            if "Quad for" in col:
+                df[col] = df[col].apply(lambda x: f"{int(float(x))}" if pd.notnull(x) and str(x).strip() != '' else x)
+
         return styles
 
     return df.style.apply(style_function, axis=None)
