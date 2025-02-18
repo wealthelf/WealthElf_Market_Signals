@@ -15,7 +15,7 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
     base_settings = {
         'spreadsheet_id': "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
         'start_row': 1,
-        'end_row': 1000,  # Increased default to 1000 rows
+        'end_row': 1000,
         'sort_by': "",
         'sort_ascending': True,
         'selected_columns': [],
@@ -27,16 +27,16 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
             **base_settings,
             'sheet_name': 'ALERTS',
             'start_col': 'A',
-            'end_col': 'D'  # Fixed end column for Alerts
+            'end_col': 'D'
         }
     elif page == 'signals':
         return {
             **base_settings,
             'sheet_name': 'SIGNALS',
             'start_col': 'A',
-            'end_col': 'U',  # Updated end column for Signals
-            'sort_by': 'TPI Slope',  # Default sort column for Signals
-            'sort_ascending': False  # Sort in descending order
+            'end_col': 'U',
+            'sort_by': 'TPI Slope',
+            'sort_ascending': False
         }
 
     return base_settings
@@ -58,7 +58,7 @@ def load_settings(page: str = "") -> Dict[str, Any]:
         """, (st.session_state.user_id, page))
         result = cursor.fetchone()
 
-        if result:
+        if result and result['settings']:
             saved_settings = result['settings']
             settings = defaults.copy()
             settings.update(saved_settings)
@@ -73,22 +73,40 @@ def load_settings(page: str = "") -> Dict[str, Any]:
 def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
     """Save user-specific settings to database."""
     if not st.session_state.get('user_id'):
+        st.warning("Please log in to save settings.")
+        return False
+
+    # Validate settings before saving
+    if not isinstance(settings, dict):
+        st.error("Invalid settings format")
         return False
 
     conn = get_db_connection()
     try:
         cursor = conn.cursor()
+
+        # Ensure the settings are properly serialized
+        settings_json = json.dumps(settings)
+
         cursor.execute("""
             INSERT INTO user_preferences (user_id, page, settings)
-            VALUES (%s, %s, %s)
+            VALUES (%s, %s, %s::jsonb)
             ON CONFLICT (user_id, page) 
             DO UPDATE SET 
                 settings = EXCLUDED.settings,
                 updated_at = CURRENT_TIMESTAMP
-        """, (st.session_state.user_id, page, json.dumps(settings)))
+            RETURNING user_id
+        """, (st.session_state.user_id, page, settings_json))
+
+        # Check if the insert/update was successful
+        result = cursor.fetchone()
         conn.commit()
-        return True
+
+        if result:
+            return True
+        return False
     except Exception as e:
+        conn.rollback()
         st.error(f"Error saving settings: {str(e)}")
         return False
     finally:
