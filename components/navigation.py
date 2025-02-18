@@ -6,21 +6,20 @@ def render_navigation(current_page=None):
     st.markdown(
         """
         <style>
-        .nav-link {
-            text-decoration: none;
-            padding: 0.5rem;
+        .stButton > button {
             width: 100%;
-            display: block;
-            text-align: center;
+            background-color: white;
             color: #262730;
-            background-color: #FFFFFF;
             border: 1px solid #E0E0E0;
             border-radius: 0.5rem;
+            padding: 0.5rem;
+            margin: 0;
         }
-        .nav-link:hover {
+        .stButton > button:hover {
             background-color: #F0F2F6;
+            border-color: #919191;
         }
-        .nav-link.active {
+        .stButton > button:active {
             background-color: #F0F2F6;
             border-color: #919191;
         }
@@ -29,24 +28,16 @@ def render_navigation(current_page=None):
         unsafe_allow_html=True
     )
 
-    # Create navigation using custom links
+    # Create navigation using buttons
     col1, col2 = st.columns(2)
 
     with col1:
-        active = current_page == 'alerts'
-        active_class = " active" if active else ""
-        st.markdown(
-            f'<a href="/pages/1_📊_Alerts.py" target="_self" class="nav-link{active_class}">📊 Alerts</a>',
-            unsafe_allow_html=True
-        )
+        if st.button("📊 Alerts", use_container_width=True):
+            st.switch_page("pages/1_📊_Alerts.py")
 
     with col2:
-        active = current_page == 'signals'
-        active_class = " active" if active else ""
-        st.markdown(
-            f'<a href="/pages/2_📈_Signals.py" target="_self" class="nav-link{active_class}">📈 Signals</a>',
-            unsafe_allow_html=True
-        )
+        if st.button("📈 Signals", use_container_width=True):
+            st.switch_page("pages/2_📈_Signals.py")
 
     # Add a separator below navigation
     st.markdown("---")
