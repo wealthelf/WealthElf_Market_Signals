@@ -11,9 +11,15 @@ def display_settings_page():
 
     st.markdown("---")
 
+    # Initialize settings if not present in session state
+    if 'alerts_settings' not in st.session_state:
+        st.session_state.alerts_settings = load_settings('alerts')
+    if 'signals_settings' not in st.session_state:
+        st.session_state.signals_settings = load_settings('signals')
+
     # Alerts Configuration
     st.header("Alerts Page Settings")
-    alerts_settings = load_settings('alerts')
+    alerts_settings = st.session_state.alerts_settings
 
     # Alerts sheet configuration
     alerts_sheet = st.text_input(
@@ -43,7 +49,7 @@ def display_settings_page():
     # Signals Configuration
     st.markdown("---")
     st.header("Signals Page Settings")
-    signals_settings = load_settings('signals')
+    signals_settings = st.session_state.signals_settings
 
     # Signals sheet configuration
     signals_sheet = st.text_input(
@@ -71,24 +77,34 @@ def display_settings_page():
         ).upper()
 
     # Save Settings Button
-    if st.button("💾 Save Settings"):
-        # Update Alerts settings
-        alerts_settings.update({
+    if st.button("💾 Save Settings", type="primary"):
+        # Update Alerts settings with new values
+        new_alerts_settings = alerts_settings.copy()
+        new_alerts_settings.update({
             'sheet_name': alerts_sheet,
             'start_col': alerts_start_col,
             'end_col': alerts_end_col
         })
-        save_settings(alerts_settings, 'alerts')
 
-        # Update Signals settings
-        signals_settings.update({
+        # Update Signals settings with new values
+        new_signals_settings = signals_settings.copy()
+        new_signals_settings.update({
             'sheet_name': signals_sheet,
             'start_col': signals_start_col,
             'end_col': signals_end_col
         })
-        save_settings(signals_settings, 'signals')
 
-        st.success("Settings saved successfully!")
+        # Save both settings
+        alerts_saved = save_settings(new_alerts_settings, 'alerts')
+        signals_saved = save_settings(new_signals_settings, 'signals')
+
+        if alerts_saved and signals_saved:
+            # Update session state with new settings
+            st.session_state.alerts_settings = new_alerts_settings
+            st.session_state.signals_settings = new_signals_settings
+            st.success("Settings saved successfully!")
+        else:
+            st.error("Failed to save settings")
 
     # Display current settings info
     st.sidebar.markdown("---")
