@@ -45,19 +45,18 @@ Select a page from the sidebar above to:
 - Monitor Market Signals
 """)
 
-
 selected_page = st.sidebar.radio("Select a page", ["Alerts", "Signals"])
 
 if selected_page == "Alerts":
     try:
-        page = importlib.import_module("pages.page1_alerts")
+        page = importlib.import_module("pages.1_📊_Alerts") # Adjusted import path
         page.display_alerts_page()
     except ImportError:
-        st.error("Error importing Alerts page. Check pages/page1_alerts.py")
+        st.error("Error importing Alerts page. Check pages/1_📊_Alerts.py")
 elif selected_page == "Signals":
     try:
-        page = importlib.import_module("pages.page2_signals")  # Assuming Signals is page 2
-        page.display_signals_page()  # Replace with the actual function name if different
+        page = importlib.import_module("pages.page2_signals")  
+        page.display_signals_page()  
     except ImportError:
         st.error("Error importing Signals page. Check pages/page2_signals.py")
 
