@@ -3,19 +3,40 @@ import pandas as pd
 
 def apply_conditional_formatting(df):
     """Apply conditional formatting to the DataFrame."""
-    def color_slope(val):
+    def color_value(val, column_name):
         try:
-            val = str(val)
-            if "Slope Up" in val:
+            # Convert to string for "Slope" text check
+            val_str = str(val)
+
+            # Check for "Slope" text first
+            if "Slope Up" in val_str:
                 return 'color: white; background-color: green'
-            elif "Slope Down" in val:
+            elif "Slope Down" in val_str:
                 return 'color: white; background-color: red'
+
+            # Skip numeric coloring for columns with "Quad" in their name
+            if "Quad" in column_name:
+                return ''
+
+            # Try to convert to float for numeric comparison
+            val_float = float(val)
+            if val_float > 0:
+                return 'color: white; background-color: green'
+            elif val_float < 0:
+                return 'color: white; background-color: red'
+
             return ''
-        except:
+        except (ValueError, TypeError):
             return ''
 
-    # Apply the styling to all columns
-    return df.style.applymap(color_slope)
+    # Create a style function that includes column name information
+    def style_function(df):
+        styles = pd.DataFrame('', index=df.index, columns=df.columns)
+        for col in df.columns:
+            styles[col] = df[col].apply(lambda x: color_value(x, col))
+        return styles
+
+    return df.style.apply(style_function, axis=None)
 
 def render_data_table(df, selected_columns):
     """Render interactive data table with selected columns and conditional formatting."""
