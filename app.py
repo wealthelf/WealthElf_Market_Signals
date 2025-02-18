@@ -1,6 +1,5 @@
 import streamlit as st
 from utils.settings_manager import load_settings
-import importlib
 from components.auth import render_login_form
 from components.navigation import render_navigation
 
@@ -32,37 +31,17 @@ if is_authenticated:
     st.markdown("---")
 
     # Render navigation
-    render_navigation(st.session_state.current_page)
+    render_navigation()
 
-    # Handle navigation based on session state
-    if st.session_state.current_page == 'alerts':
-        try:
-            page = importlib.import_module("pages.1_📊_Alerts")
-            page.display_alerts_page()
-        except ImportError:
-            st.error("Error importing Alerts page")
-    elif st.session_state.current_page == 'signals':
-        try:
-            page = importlib.import_module("pages.2_📈_Signals")
-            page.display_signals_page()
-        except ImportError:
-            st.error("Error importing Signals page")
-    elif st.session_state.current_page == 'settings':
-        try:
-            page = importlib.import_module("pages.3_⚙️_Settings")
-            page.display_settings_page()
-        except ImportError:
-            st.error("Error importing Settings page")
-    else:
-        # Welcome message with styling
-        st.markdown("""
-        <div style='text-align: center; padding: 2rem;'>
-            <h1>Welcome to WealthElf Market Signals</h1>
-            <p style='font-size: 1.2rem;'>
-                Your comprehensive platform for market insights and real-time signals.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+    # Welcome message with styling
+    st.markdown("""
+    <div style='text-align: center; padding: 2rem;'>
+        <h1>Welcome to WealthElf Market Signals</h1>
+        <p style='font-size: 1.2rem;'>
+            Your comprehensive platform for market insights and real-time signals.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 else:
     st.markdown("""
     <div style='text-align: center; padding: 2rem;'>
