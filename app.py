@@ -10,12 +10,18 @@ st.set_page_config(
     layout="wide"
 )
 
-# Initialize session state for authentication if not present
+# Force clean session state on app startup
+if 'force_reauth' not in st.session_state:
+    # Clear any existing auth state
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.session_state.force_reauth = True
+
+# Initialize session state for authentication
 if 'user_id' not in st.session_state:
     st.session_state.user_id = None
+if 'username' not in st.session_state:
     st.session_state.username = None
-
-# Initialize auth_state if not present
 if 'auth_state' not in st.session_state:
     st.session_state.auth_state = 'login'
 
