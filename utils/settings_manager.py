@@ -17,18 +17,17 @@ def load_settings(page: str = "") -> Dict[str, Any]:
             with open(SETTINGS_FILE, 'r') as f:
                 all_settings = json.load(f)
                 if page:
-                    return all_settings.get(page, get_default_settings())
+                    return all_settings.get(page, get_default_settings(page))
                 return all_settings.get('default', get_default_settings())
     except Exception as e:
         st.error(f"Error loading settings: {str(e)}")
 
-    return get_default_settings()
+    return get_default_settings(page)
 
-def get_default_settings() -> Dict[str, Any]:
-    """Return default settings."""
-    return {
+def get_default_settings(page: str = "") -> Dict[str, Any]:
+    """Return default settings based on page."""
+    base_settings = {
         'spreadsheet_id': "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
-        'sheet_name': "Sheet1",
         'start_col': "A",
         'end_col': "Z",
         'start_row': 1,
@@ -38,6 +37,15 @@ def get_default_settings() -> Dict[str, Any]:
         'selected_columns': [],
         'filters': {}
     }
+
+    if page == 'alerts':
+        base_settings['sheet_name'] = 'ALERTS'
+    elif page == 'signals':
+        base_settings['sheet_name'] = 'Dashboard-ETFs-Sort'
+    else:
+        base_settings['sheet_name'] = 'Sheet1'
+
+    return base_settings
 
 def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
     """Save settings to JSON file."""
