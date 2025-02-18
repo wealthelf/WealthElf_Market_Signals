@@ -35,9 +35,9 @@ def display_settings_page():
     with col2:
         alerts_end_col = st.text_input(
             "End Column",
-            value=alerts_settings.get('end_col', 'Z'),
+            value=alerts_settings.get('end_col', 'D'),
             key="alerts_end_col",
-            help="Enter end column letter (e.g., Z)"
+            help="Enter end column letter (e.g., D)"
         ).upper()
 
     # Signals Configuration
@@ -65,9 +65,9 @@ def display_settings_page():
     with col2:
         signals_end_col = st.text_input(
             "End Column",
-            value=signals_settings.get('end_col', 'Z'),
+            value=signals_settings.get('end_col', 'AW'),
             key="signals_end_col",
-            help="Enter end column letter (e.g., Z)"
+            help="Enter end column letter (e.g., AW)"
         ).upper()
 
     # Save Settings Button

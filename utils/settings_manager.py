@@ -28,8 +28,6 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
     """Return default settings based on page."""
     base_settings = {
         'spreadsheet_id': "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
-        'start_col': "A",
-        'end_col': "Z",
         'start_row': 1,
         'end_row': 1000,
         'sort_by': "",
@@ -39,11 +37,23 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
     }
 
     if page == 'alerts':
-        base_settings['sheet_name'] = 'ALERTS'
+        base_settings.update({
+            'sheet_name': 'ALERTS',
+            'start_col': 'A',
+            'end_col': 'D'
+        })
     elif page == 'signals':
-        base_settings['sheet_name'] = 'Dashboard-ETFs-Sort'
+        base_settings.update({
+            'sheet_name': 'Dashboard-ETFs-Sort',
+            'start_col': 'A',
+            'end_col': 'AW'
+        })
     else:
-        base_settings['sheet_name'] = 'Sheet1'
+        base_settings.update({
+            'sheet_name': 'Sheet1',
+            'start_col': 'A',
+            'end_col': 'Z'
+        })
 
     return base_settings
 
