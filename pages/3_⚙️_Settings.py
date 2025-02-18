@@ -2,6 +2,13 @@ import streamlit as st
 from utils.settings_manager import load_settings, save_settings
 
 def display_settings_page():
+    # Initialize session state for settings if not already done
+    if 'settings_initialized' not in st.session_state:
+        st.session_state.alerts_settings = load_settings('alerts')
+        st.session_state.signals_settings = load_settings('signals')
+        st.session_state.settings_initialized = True
+        st.session_state.settings_saved = False
+
     # App header with logo and title
     col1, col2 = st.columns([1, 4])
     with col1:
@@ -10,12 +17,6 @@ def display_settings_page():
         st.title("Application Settings")
 
     st.markdown("---")
-
-    # Initialize or load settings from session state
-    if 'settings_loaded' not in st.session_state:
-        st.session_state.alerts_settings = load_settings('alerts')
-        st.session_state.signals_settings = load_settings('signals')
-        st.session_state.settings_loaded = True
 
     # Alerts Configuration
     st.header("Alerts Page Settings")
@@ -75,8 +76,8 @@ def display_settings_page():
         ).upper()
 
     # Save Settings Button
-    if st.button("💾 Save Settings", type="primary"):
-        # Create new settings dictionaries with all existing settings
+    if st.button("💾 Save Settings", type="primary", key="save_settings"):
+        # Update settings with new values
         new_alerts_settings = st.session_state.alerts_settings.copy()
         new_alerts_settings.update({
             'sheet_name': alerts_sheet,
@@ -96,12 +97,12 @@ def display_settings_page():
         signals_saved = save_settings(new_signals_settings, 'signals')
 
         if alerts_saved and signals_saved:
-            # Update session state
             st.session_state.alerts_settings = new_alerts_settings
             st.session_state.signals_settings = new_signals_settings
-            st.success("Settings saved successfully!")
+            st.session_state.settings_saved = True
+            st.success("✅ Settings saved successfully!")
         else:
-            st.error("Failed to save settings")
+            st.error("❌ Failed to save settings")
 
     # Display current settings info
     st.sidebar.markdown("---")
