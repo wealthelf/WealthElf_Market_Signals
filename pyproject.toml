@@ -9,6 +9,7 @@ dependencies = [
     "numpy>=2.2.3",
     "openai>=1.63.2",
     "pandas>=2.2.3",
+    "psycopg2-binary>=2.9.10",
     "streamlit>=1.42.1",
     "trafilatura>=2.0.0",
     "twilio>=9.4.5",

@@ -63,150 +63,157 @@ def create_range_string(sheet_name, start_col, end_col, start_row, end_row):
     return f"'{sheet_name}'!{start_col}{start_row}:{end_col}{end_row}"
 
 def display_signals_page():
-    # App header with logo and title
-    col1, col2, col3 = st.columns([1, 3, 1])
-    with col1:
-        st.image("attached_assets/9Box favicon.png", width=100)
-    with col2:
-        st.title("Market Signals")
-    with col3:
-        st.button("💾 Save Current Settings", on_click=save_current_settings)
-
-    st.markdown("---")
-
-    # Import market symbols if available
+    """Main function to display the signals page"""
     try:
-        market_symbols_df = load_market_symbols()
-        if not market_symbols_df.empty:
-            st.success(f"Loaded {len(market_symbols_df)} market symbols from database")
-    except Exception as e:
-        st.warning(f"Could not load market symbols: {str(e)}")
-        market_symbols_df = None
+        # App header with logo and title
+        col1, col2, col3 = st.columns([1, 3, 1])
+        with col1:
+            st.image("attached_assets/9Box favicon.png", width=100)
+        with col2:
+            st.title("Market Signals")
+        with col3:
+            st.button("💾 Save Current Settings", on_click=save_current_settings)
 
-    # Sidebar for sheet configuration
-    st.sidebar.header("Sheet Configuration")
-    spreadsheet_id = st.sidebar.text_input(
-        "Spreadsheet ID",
-        value=st.session_state.signals_settings['spreadsheet_id'],
-        key="spreadsheet_id",
-        help="Enter the ID from your Google Sheets URL"
-    )
-    sheet_name = st.sidebar.text_input(
-        "Sheet Name",
-        value=st.session_state.signals_settings['sheet_name'],
-        key="sheet_name",
-        help="Enter the name of the sheet (e.g., Signals)"
-    )
+        st.markdown("---")
 
-    # Add column range configuration
-    st.sidebar.subheader("Column Range")
-    start_col = st.sidebar.text_input(
-        "Start Column",
-        value=st.session_state.signals_settings['start_col'],
-        key="start_col",
-        help="Enter start column letter (e.g., A)"
-    ).upper()
-    end_col = st.sidebar.text_input(
-        "End Column",
-        value=st.session_state.signals_settings['end_col'],
-        key="end_col",
-        help="Enter end column letter (e.g., U)"
-    ).upper()
-
-    # Row range configuration
-    st.sidebar.subheader("Row Range")
-    start_row = st.sidebar.number_input(
-        "Start Row",
-        min_value=1,
-        value=st.session_state.signals_settings['start_row'],
-        key="start_row",
-        help="Enter start row number"
-    )
-    end_row = st.sidebar.number_input(
-        "End Row",
-        min_value=1,
-        value=st.session_state.signals_settings['end_row'],
-        key="end_row",
-        help="Enter end row number"
-    )
-
-    # Import market symbols button
-    if st.sidebar.button("📥 Import Market Symbols"):
+        # Import market symbols if available
         try:
-            import_market_symbols_from_file(
-                "attached_assets/Pasted-0LNB-SG-XBT-Bitcoin-Tracker-Euro-AGAP-L-WisdomTree-Agriculture-AGCP-L-WisdomTree-Broad-Commodities-A-1739880998797.txt"
-            )
-            st.success("Market symbols imported successfully!")
-            # Refresh the market symbols display
             market_symbols_df = load_market_symbols()
+            if not market_symbols_df.empty:
+                st.success(f"Loaded {len(market_symbols_df)} market symbols from database")
         except Exception as e:
-            st.error(f"Error importing market symbols: {str(e)}")
+            st.warning(f"Could not load market symbols: {str(e)}")
+            market_symbols_df = None
 
-    # Validate inputs and create range
-    is_valid, error_message = validate_range_inputs(sheet_name, start_col, end_col, start_row, end_row)
-    if not is_valid:
-        st.error(f"Invalid input: {error_message}")
-        return
+        # Sidebar for sheet configuration
+        st.sidebar.header("Sheet Configuration")
+        spreadsheet_id = st.sidebar.text_input(
+            "Spreadsheet ID",
+            value=st.session_state.signals_settings['spreadsheet_id'],
+            key="spreadsheet_id",
+            help="Enter the ID from your Google Sheets URL"
+        )
+        sheet_name = st.sidebar.text_input(
+            "Sheet Name",
+            value=st.session_state.signals_settings['sheet_name'],
+            key="sheet_name",
+            help="Enter the name of the sheet (e.g., Signals)"
+        )
 
-    # Create range with proper format
-    range_name = create_range_string(sheet_name, start_col, end_col, start_row, end_row)
+        # Add column range configuration
+        st.sidebar.subheader("Column Range")
+        start_col = st.sidebar.text_input(
+            "Start Column",
+            value=st.session_state.signals_settings['start_col'],
+            key="start_col",
+            help="Enter start column letter (e.g., A)"
+        ).upper()
+        end_col = st.sidebar.text_input(
+            "End Column",
+            value=st.session_state.signals_settings['end_col'],
+            key="end_col",
+            help="Enter end column letter (e.g., U)"
+        ).upper()
 
-    # Manual refresh button
-    if st.sidebar.button("🔄 Refresh Data"):
-        st.cache_data.clear()
-        st.success("Data cache cleared! Loading fresh data...")
+        # Row range configuration
+        st.sidebar.subheader("Row Range")
+        start_row = st.sidebar.number_input(
+            "Start Row",
+            min_value=1,
+            value=st.session_state.signals_settings['start_row'],
+            key="start_row",
+            help="Enter start row number"
+        )
+        end_row = st.sidebar.number_input(
+            "End Row",
+            min_value=1,
+            value=st.session_state.signals_settings['end_row'],
+            key="end_row",
+            help="Enter end row number"
+        )
 
-    # Load data
-    if spreadsheet_id and sheet_name:
-        with st.spinner("Loading data..."):
+        # Import market symbols button
+        if st.sidebar.button("📥 Import Market Symbols"):
             try:
-                df = load_sheet_data(spreadsheet_id, range_name)
-
-                if df is not None and not df.empty:
-                    st.success("Data loaded successfully!")
-
-                    # Column selection
-                    st.subheader("Column Visibility")
-                    selected_columns = column_selector(df)
-
-                    # Filtering and sorting
-                    st.subheader("Data Controls")
-                    filters = render_filters(df, page_context='signals')
-                    # Store current filters in session state
-                    st.session_state.current_filters = filters
-
-                    sort_by, ascending = render_sort_controls(
-                        df,
-                        default_sort=st.session_state.signals_settings['sort_by'],
-                        default_ascending=st.session_state.signals_settings['sort_ascending'],
-                        page_context='signals'
-                    )
-
-                    # Apply operations
-                    filtered_df = filter_dataframe(df, filters)
-                    if sort_by:
-                        filtered_df = sort_dataframe(filtered_df, sort_by, ascending)
-
-                    # Display data
-                    st.subheader("Data View")
-                    render_data_table(filtered_df, selected_columns)
-
-                    # Display data info
-                    st.sidebar.markdown("---")
-                    st.sidebar.subheader("Data Info")
-                    st.sidebar.info(f"""
-                        - Total Rows: {len(df)}
-                        - Total Columns: {len(df.columns)}
-                        - Filtered Rows: {len(filtered_df)}
-                        - Range: {range_name}
-                    """)
-                else:
-                    st.warning("No data found in the specified range. Please check your range settings.")
+                import_market_symbols_from_file(
+                    "attached_assets/Pasted-0LNB-SG-XBT-Bitcoin-Tracker-Euro-AGAP-L-WisdomTree-Agriculture-AGCP-L-WisdomTree-Broad-Commodities-A-1739880998797.txt"
+                )
+                st.success("Market symbols imported successfully!")
+                # Refresh the market symbols display
+                market_symbols_df = load_market_symbols()
             except Exception as e:
-                st.error(f"Error loading data: {str(e)}")
-                st.info("Please verify your spreadsheet ID and range settings.")
-    else:
-        st.info("Please enter a Spreadsheet ID and sheet name to begin.")
+                st.error(f"Error importing market symbols: {str(e)}")
+
+        # Validate inputs and create range
+        is_valid, error_message = validate_range_inputs(sheet_name, start_col, end_col, start_row, end_row)
+        if not is_valid:
+            st.error(f"Invalid input: {error_message}")
+            return
+
+        # Create range with proper format
+        range_name = create_range_string(sheet_name, start_col, end_col, start_row, end_row)
+
+        # Manual refresh button
+        if st.sidebar.button("🔄 Refresh Data"):
+            st.cache_data.clear()
+            st.success("Data cache cleared! Loading fresh data...")
+
+        # Load data
+        if spreadsheet_id and sheet_name:
+            with st.spinner("Loading data..."):
+                try:
+                    df = load_sheet_data(spreadsheet_id, range_name)
+
+                    if df is not None and not df.empty:
+                        st.success("Data loaded successfully!")
+
+                        # Column selection
+                        st.subheader("Column Visibility")
+                        selected_columns = column_selector(df)
+
+                        # Filtering and sorting
+                        st.subheader("Data Controls")
+                        filters = render_filters(df, page_context='signals')
+                        # Store current filters in session state
+                        st.session_state.current_filters = filters
+
+                        sort_by, ascending = render_sort_controls(
+                            df,
+                            default_sort=st.session_state.signals_settings['sort_by'],
+                            default_ascending=st.session_state.signals_settings['sort_ascending'],
+                            page_context='signals'
+                        )
+
+                        # Apply operations
+                        filtered_df = filter_dataframe(df, filters)
+                        if sort_by:
+                            filtered_df = sort_dataframe(filtered_df, sort_by, ascending)
+
+                        # Display data
+                        st.subheader("Data View")
+                        render_data_table(filtered_df, selected_columns)
+
+                        # Display data info
+                        st.sidebar.markdown("---")
+                        st.sidebar.subheader("Data Info")
+                        st.sidebar.info(f"""
+                            - Total Rows: {len(df)}
+                            - Total Columns: {len(df.columns)}
+                            - Filtered Rows: {len(filtered_df)}
+                            - Range: {range_name}
+                        """)
+                    else:
+                        st.warning("No data found in the specified range. Please check your range settings.")
+                except Exception as e:
+                    st.error(f"Error loading data: {str(e)}")
+                    st.info("Please verify your spreadsheet ID and range settings.")
+        else:
+            st.info("Please enter a Spreadsheet ID and sheet name to begin.")
+
+    except Exception as e:
+        st.error(f"An error occurred while displaying the signals page: {str(e)}")
+        import traceback
+        st.exception(traceback.format_exc())
 
 if __name__ == "__main__":
     display_signals_page()
