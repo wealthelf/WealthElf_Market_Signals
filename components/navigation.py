@@ -6,28 +6,32 @@ def render_navigation(current_page=None):
     st.markdown(
         """
         <style>
-        .stButton button {
+        div[data-testid="stPageLink"] {
             width: 100%;
+            text-align: center;
+            padding: 0.5rem;
+        }
+        div[data-testid="stPageLink"] p {
+            font-size: 1rem;
+            margin: 0;
         }
         </style>
         """,
         unsafe_allow_html=True
     )
 
-    # Create navigation buttons
+    # Create navigation using page_link
     col1, col2 = st.columns(2)
 
     with col1:
         active = current_page == 'alerts'
-        btn_style = "primary" if active else "secondary"
-        if st.button("📊 Alerts", key="nav_alerts", type=btn_style):
-            st.switch_page("pages/1_📊_Alerts.py")
+        link_style = "primary" if active else "secondary"
+        st.page_link("pages/1_📊_Alerts.py", label="📊 Alerts")
 
     with col2:
         active = current_page == 'signals'
-        btn_style = "primary" if active else "secondary"
-        if st.button("📈 Signals", key="nav_signals", type=btn_style):
-            st.switch_page("pages/2_📈_Signals.py")
+        link_style = "primary" if active else "secondary"
+        st.page_link("pages/2_📈_Signals.py", label="📈 Signals")
 
     # Add a separator below navigation
     st.markdown("---")
