@@ -2,6 +2,8 @@ import streamlit as st
 from utils.settings_manager import load_settings, save_settings
 
 def display_settings_page():
+    st.set_page_config(layout="wide")
+
     # App header with logo and title
     col1, col2 = st.columns([1, 4])
     with col1:
@@ -11,9 +13,11 @@ def display_settings_page():
 
     st.markdown("---")
 
-    # Load settings at the start of the page
-    alerts_settings = load_settings('alerts')
-    signals_settings = load_settings('signals')
+    # Initialize or load settings from session state
+    if 'settings_loaded' not in st.session_state:
+        st.session_state.alerts_settings = load_settings('alerts')
+        st.session_state.signals_settings = load_settings('signals')
+        st.session_state.settings_loaded = True
 
     # Alerts Configuration
     st.header("Alerts Page Settings")
@@ -21,7 +25,7 @@ def display_settings_page():
     # Alerts sheet configuration
     alerts_sheet = st.text_input(
         "Sheet Name",
-        value=alerts_settings['sheet_name'],
+        value=st.session_state.alerts_settings['sheet_name'],
         key="alerts_sheet_name",
         help="Enter the sheet name for Alerts page"
     )
@@ -31,14 +35,14 @@ def display_settings_page():
     with col1:
         alerts_start_col = st.text_input(
             "Start Column",
-            value=alerts_settings['start_col'],
+            value=st.session_state.alerts_settings['start_col'],
             key="alerts_start_col",
             help="Enter start column letter (e.g., A)"
         ).upper()
     with col2:
         alerts_end_col = st.text_input(
             "End Column",
-            value=alerts_settings['end_col'],
+            value=st.session_state.alerts_settings['end_col'],
             key="alerts_end_col",
             help="Enter end column letter (e.g., D)"
         ).upper()
@@ -50,7 +54,7 @@ def display_settings_page():
     # Signals sheet configuration
     signals_sheet = st.text_input(
         "Sheet Name",
-        value=signals_settings['sheet_name'],
+        value=st.session_state.signals_settings['sheet_name'],
         key="signals_sheet_name",
         help="Enter the sheet name for Signals page"
     )
@@ -60,33 +64,33 @@ def display_settings_page():
     with col1:
         signals_start_col = st.text_input(
             "Start Column",
-            value=signals_settings['start_col'],
+            value=st.session_state.signals_settings['start_col'],
             key="signals_start_col",
             help="Enter start column letter (e.g., A)"
         ).upper()
     with col2:
         signals_end_col = st.text_input(
             "End Column",
-            value=signals_settings['end_col'],
+            value=st.session_state.signals_settings['end_col'],
             key="signals_end_col",
             help="Enter end column letter (e.g., AW)"
         ).upper()
 
     # Save Settings Button
     if st.button("💾 Save Settings", type="primary"):
-        # Update settings with new values while preserving other fields
-        new_alerts_settings = alerts_settings.copy()
+        # Create new settings dictionaries with all existing settings
+        new_alerts_settings = st.session_state.alerts_settings.copy()
         new_alerts_settings.update({
             'sheet_name': alerts_sheet,
             'start_col': alerts_start_col,
-            'end_col': alerts_end_col,
+            'end_col': alerts_end_col
         })
 
-        new_signals_settings = signals_settings.copy()
+        new_signals_settings = st.session_state.signals_settings.copy()
         new_signals_settings.update({
             'sheet_name': signals_sheet,
             'start_col': signals_start_col,
-            'end_col': signals_end_col,
+            'end_col': signals_end_col
         })
 
         # Save both settings
@@ -94,6 +98,9 @@ def display_settings_page():
         signals_saved = save_settings(new_signals_settings, 'signals')
 
         if alerts_saved and signals_saved:
+            # Update session state
+            st.session_state.alerts_settings = new_alerts_settings
+            st.session_state.signals_settings = new_signals_settings
             st.success("Settings saved successfully!")
         else:
             st.error("Failed to save settings")

@@ -17,16 +17,16 @@ def load_settings(page: str = "") -> Dict[str, Any]:
             with open(SETTINGS_FILE, 'r') as f:
                 all_settings = json.load(f)
                 if page:
-                    # Merge defaults with saved settings to ensure all fields exist
-                    defaults = get_default_settings(page)
-                    saved = all_settings.get(page, {})
-                    defaults.update(saved)  # Saved settings override defaults
-                    return defaults
+                    saved_settings = all_settings.get(page, {})
+                    if saved_settings:  # If we have saved settings, use them
+                        return saved_settings
+                    # Only use defaults if no settings exist
+                    return get_default_settings(page)
                 return all_settings.get('default', get_default_settings())
+        return get_default_settings(page)
     except Exception as e:
         st.error(f"Error loading settings: {str(e)}")
-
-    return get_default_settings(page)
+        return get_default_settings(page)
 
 def get_default_settings(page: str = "") -> Dict[str, Any]:
     """Return default settings based on page."""
@@ -72,15 +72,11 @@ def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
             with open(SETTINGS_FILE, 'r') as f:
                 all_settings = json.load(f)
 
-        # Merge with existing settings to preserve other fields
+        # For page-specific settings, save directly without merging
         if page:
-            current_settings = all_settings.get(page, {})
-            current_settings.update(settings)
-            all_settings[page] = current_settings
+            all_settings[page] = settings
         else:
-            current_settings = all_settings.get('default', {})
-            current_settings.update(settings)
-            all_settings['default'] = current_settings
+            all_settings['default'] = settings
 
         # Save all settings
         with open(SETTINGS_FILE, 'w') as f:
