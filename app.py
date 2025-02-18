@@ -1,6 +1,7 @@
 import streamlit as st
 from utils.settings_manager import load_settings
 import importlib
+from components.auth import render_login_form
 
 # Global page configuration
 st.set_page_config(
@@ -23,72 +24,80 @@ with col1:
 with col2:
     st.title("WealthElf Market Signals")
 
-st.markdown("---")
+# Render login form in sidebar
+is_authenticated = render_login_form()
 
-# Create three columns for the icons
-col1, col2, col3 = st.columns(3)
+if is_authenticated:
+    st.markdown("---")
 
-with col1:
-    if st.button(
-        "📊 Alerts",
-        use_container_width=True,
-        help="View and manage market alerts"
-    ):
-        st.session_state.current_page = 'alerts'
+    # Create three columns for the icons
+    col1, col2, col3 = st.columns(3)
 
-with col2:
-    if st.button(
-        "📈 Signals",
-        use_container_width=True,
-        help="Monitor market signals"
-    ):
-        st.session_state.current_page = 'signals'
-        # Ensure signals_settings is initialized when navigating to signals page
-        if 'signals_settings' not in st.session_state:
-            st.session_state.signals_settings = load_settings('signals')
+    with col1:
+        if st.button(
+            "📊 Alerts",
+            use_container_width=True,
+            help="View and manage market alerts"
+        ):
+            st.session_state.current_page = 'alerts'
 
-with col3:
-    if st.button(
-        "⚙️ Settings",
-        use_container_width=True,
-        help="Configure application settings"
-    ):
-        st.session_state.current_page = 'settings'
+    with col2:
+        if st.button(
+            "📈 Signals",
+            use_container_width=True,
+            help="Monitor market signals"
+        ):
+            st.session_state.current_page = 'signals'
 
-# Handle navigation based on session state
-if st.session_state.current_page == 'alerts':
-    try:
-        page = importlib.import_module("pages.1_📊_Alerts")
-        page.display_alerts_page()
-    except ImportError:
-        st.error("Error importing Alerts page")
-elif st.session_state.current_page == 'signals':
-    try:
-        page = importlib.import_module("pages.2_📈_Signals")
-        page.display_signals_page()
-    except ImportError:
-        st.error("Error importing Signals page")
-elif st.session_state.current_page == 'settings':
-    try:
-        page = importlib.import_module("pages.3_⚙️_Settings")
-        page.display_settings_page()
-    except ImportError:
-        st.error("Error importing Settings page")
+    with col3:
+        if st.button(
+            "⚙️ Settings",
+            use_container_width=True,
+            help="Configure application settings"
+        ):
+            st.session_state.current_page = 'settings'
+
+    # Handle navigation based on session state
+    if st.session_state.current_page == 'alerts':
+        try:
+            page = importlib.import_module("pages.1_📊_Alerts")
+            page.display_alerts_page()
+        except ImportError:
+            st.error("Error importing Alerts page")
+    elif st.session_state.current_page == 'signals':
+        try:
+            page = importlib.import_module("pages.2_📈_Signals")
+            page.display_signals_page()
+        except ImportError:
+            st.error("Error importing Signals page")
+    elif st.session_state.current_page == 'settings':
+        try:
+            page = importlib.import_module("pages.3_⚙️_Settings")
+            page.display_settings_page()
+        except ImportError:
+            st.error("Error importing Settings page")
+    else:
+        # Welcome message with styling
+        st.markdown("""
+        <div style='text-align: center; padding: 2rem;'>
+            <h1>Welcome to WealthElf Market Signals</h1>
+            <p style='font-size: 1.2rem;'>
+                Your comprehensive platform for market insights and real-time signals.
+            </p>
+            <p style='font-size: 1.1rem;'>
+                Click on any of the icons above to get started:
+            </p>
+            <ul style='list-style-type: none;'>
+                <li>📊 <b>Alerts</b> - Track and manage market alerts</li>
+                <li>📈 <b>Signals</b> - Monitor real-time market signals</li>
+                <li>⚙️ <b>Settings</b> - Configure your preferences</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
 else:
-    # Welcome message with styling
     st.markdown("""
     <div style='text-align: center; padding: 2rem;'>
-        <h1>Welcome to WealthElf Market Signals</h1>
-        <p style='font-size: 1.2rem;'>
-            Your comprehensive platform for market insights and real-time signals.
-        </p>
-        <p style='font-size: 1.1rem;'>
-            Click on any of the icons above to get started:
-        </p>
-        <ul style='list-style-type: none;'>
-            <li>📊 <b>Alerts</b> - Track and manage market alerts</li>
-            <li>📈 <b>Signals</b> - Monitor real-time market signals</li>
-            <li>⚙️ <b>Settings</b> - Configure your preferences</li>
-        </ul>
+        <h2>Welcome!</h2>
+        <p>Please login or sign up to access the application.</p>
     </div>
     """, unsafe_allow_html=True)

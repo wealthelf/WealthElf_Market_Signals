@@ -2,6 +2,7 @@ import json
 import os
 import streamlit as st
 from typing import Dict, Any
+from utils.database import get_db_connection
 
 SETTINGS_FILE = "data/user_preferences.json"
 
@@ -39,52 +40,54 @@ def get_default_settings(page: str = "") -> Dict[str, Any]:
     return base_settings
 
 def load_settings(page: str = "") -> Dict[str, Any]:
-    """Load settings from JSON file, ensuring defaults are properly applied."""
-    ensure_settings_directory()
+    """Load user-specific settings from database."""
     defaults = get_default_settings(page)
 
+    if not st.session_state.get('user_id'):
+        return defaults
+
+    conn = get_db_connection()
     try:
-        if os.path.exists(SETTINGS_FILE):
-            with open(SETTINGS_FILE, 'r') as f:
-                all_settings = json.load(f)
-                if page:
-                    saved_settings = all_settings.get(page, {})
-                    # Always start with defaults and update with saved settings
-                    settings = defaults.copy()
-                    settings.update(saved_settings)
-                    return settings
-                return all_settings.get('default', defaults)
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT settings
+            FROM user_preferences
+            WHERE user_id = %s AND page = %s
+        """, (st.session_state.user_id, page))
+        result = cursor.fetchone()
+
+        if result:
+            saved_settings = result['settings']
+            settings = defaults.copy()
+            settings.update(saved_settings)
+            return settings
         return defaults
     except Exception as e:
         st.error(f"Error loading settings: {str(e)}")
         return defaults
+    finally:
+        conn.close()
 
 def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
-    """Save settings while preserving defaults."""
-    ensure_settings_directory()
+    """Save user-specific settings to database."""
+    if not st.session_state.get('user_id'):
+        return False
+
+    conn = get_db_connection()
     try:
-        # Load existing settings
-        all_settings = {}
-        if os.path.exists(SETTINGS_FILE):
-            with open(SETTINGS_FILE, 'r') as f:
-                all_settings = json.load(f)
-
-        # Ensure we preserve defaults when saving
-        if page:
-            defaults = get_default_settings(page)
-            current_settings = defaults.copy()
-            current_settings.update(settings)
-            all_settings[page] = current_settings
-        else:
-            defaults = get_default_settings()
-            current_settings = defaults.copy()
-            current_settings.update(settings)
-            all_settings['default'] = current_settings
-
-        # Save all settings
-        with open(SETTINGS_FILE, 'w') as f:
-            json.dump(all_settings, f, indent=2)
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO user_preferences (user_id, page, settings)
+            VALUES (%s, %s, %s)
+            ON CONFLICT (user_id, page) 
+            DO UPDATE SET 
+                settings = EXCLUDED.settings,
+                updated_at = CURRENT_TIMESTAMP
+        """, (st.session_state.user_id, page, json.dumps(settings)))
+        conn.commit()
         return True
     except Exception as e:
         st.error(f"Error saving settings: {str(e)}")
         return False
+    finally:
+        conn.close()
