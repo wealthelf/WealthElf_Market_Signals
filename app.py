@@ -11,6 +11,44 @@ st.set_page_config(
     layout="wide"
 )
 
+# App header with logo and title
+col1, col2 = st.columns([1, 4])
+with col1:
+    st.image("attached_assets/9Box favicon.png", width=100)
+with col2:
+    st.title("WealthElf Market Signals")
+
+st.markdown("---")
+
+st.markdown("""
+## Welcome to WealthElf Market Signals!
+
+This application provides real-time market signals and alerts from our Google Sheets data source.
+
+### Available Pages:
+
+1. **📊 Alerts**: View and track market alerts
+   - Filter and sort alerts
+   - Customize column visibility
+   - Save your preferred view settings
+
+2. **📈 Signals**: Monitor market signals
+   - Track different signal types
+   - Apply custom filters
+   - Sort and organize your view
+
+Use the sidebar to navigate between pages and access different features.
+""")
+
+# Display some basic statistics or recent updates if available
+st.sidebar.markdown("### Quick Navigation")
+st.sidebar.info("""
+Select a page from the sidebar above to:
+- View Market Alerts
+- Monitor Market Signals
+""")
+
+
 # Initialize session state for persistent settings
 if 'settings' not in st.session_state:
     st.session_state.settings = load_settings()
@@ -36,18 +74,7 @@ def save_current_settings():
     else:
         st.error("Failed to save settings")
 
-def main():
-    # App header with logo and title
-    col1, col2, col3 = st.columns([1, 3, 1])
-    with col1:
-        st.image("attached_assets/9Box favicon.png", width=100)
-    with col2:
-        st.title("WealthElf Market Signals")
-    with col3:
-        st.button("💾 Save Current Settings", on_click=save_current_settings)
-
-    st.markdown("---")
-
+def display_alerts_page():
     # Sidebar for sheet configuration
     st.sidebar.header("Sheet Configuration")
     spreadsheet_id = st.sidebar.text_input(
@@ -154,5 +181,12 @@ def main():
     else:
         st.info("Please enter a Spreadsheet ID and sheet name to begin.")
 
+
+page = st.sidebar.radio("Select a page", ("Alerts", "Signals"))
+
+if page == "Alerts":
+    display_alerts_page()
+
+
 if __name__ == "__main__":
-    main()
+    pass

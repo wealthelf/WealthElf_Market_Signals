@@ -1,0 +1,22 @@
+{
+  "spreadsheet_id": "116XDr6Kziy_LSCx_xrMpq4TNXIEJLbVw2lIHBk1McC8",
+  "sheet_name": "ALERTS",
+  "start_col": "A",
+  "end_col": "D",
+  "start_row": 1,
+  "end_row": 1000,
+  "sort_by": "Date",
+  "sort_ascending": false,
+  "selected_columns": [
+    "Ticker",
+    "Name",
+    "Description",
+    "Date"
+  ],
+  "filters": {
+    "Ticker": "",
+    "Name": [],
+    "Description": [],
+    "Date": ""
+  }
+}
