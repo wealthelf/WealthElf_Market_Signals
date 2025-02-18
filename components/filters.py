@@ -22,16 +22,19 @@ def render_filters(df):
                     key=f"{col_key}_date"
                 )
             elif pd.api.types.is_numeric_dtype(df[column]):
-                # Handle numeric columns
-                min_val = float(df[column].min())
-                max_val = float(df[column].max())
-                filters[column] = st.slider(
-                    f"Filter {column}",
-                    min_val,
-                    max_val,
-                    (min_val, max_val),
-                    key=f"{col_key}_numeric"
-                )
+                # Handle numeric range filters
+                try:
+                    min_val = float(df[column].min())
+                    max_val = float(df[column].max())
+                    filters[column] = st.slider(
+                        f"Filter {column}",
+                        min_val,
+                        max_val,
+                        (min_val, max_val),
+                        key=f"{col_key}_numeric"
+                    )
+                except:
+                    pass
             else:
                 # Handle text columns
                 unique_values = df[column].unique()
@@ -59,10 +62,17 @@ def render_sort_controls(df, default_sort="", default_ascending=True):
     col1, col2 = st.columns(2)
 
     with col1:
+        # Create the full list of options
+        options = [""] + list(df.columns)
+        # Find the correct index for the default sort
+        default_index = 0  # Default to first item (blank)
+        if default_sort in df.columns:
+            default_index = options.index(default_sort)
+
         sort_by = st.selectbox(
             "Sort by",
-            [""] + list(df.columns),
-            index=[""] + list(df.columns).index(default_sort) if default_sort in df.columns else 0,
+            options,
+            index=default_index,
             key="sort_by"
         )
 
