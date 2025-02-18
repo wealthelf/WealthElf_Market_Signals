@@ -39,17 +39,6 @@ def process_datetime_columns(df):
         df['Date'] = date_col
     return df
 
-def filter_dataframe(df, filters):
-    """Apply filters to dataframe"""
-    filtered_df = df.copy()
-    for column, filter_value in filters.items():
-        if filter_value:
-            if pd.api.types.is_numeric_dtype(df[column]):
-                filtered_df = filtered_df[filtered_df[column] == float(filter_value)]
-            else:
-                filtered_df = filtered_df[filtered_df[column].astype(str).str.contains(str(filter_value), case=False)]
-    return filtered_df
-
 def save_current_settings():
     """Save current input values as default settings"""
     try:
