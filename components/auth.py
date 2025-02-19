@@ -6,11 +6,9 @@ from utils.auth import (
 
 def logout_user():
     """Log out the current user."""
-    # Clear all session state
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
+    # Force the app to rerun to show the landing page first
     st.session_state.auth_state = 'login'  # Reset to login state
-    st.experimental_rerun()  # Force the app to rerun and show the login page
+    st.experimental_rerun()  # This reruns the app, redirecting to the login page
 
 def render_login_form():
     """Render the login/signup form."""
@@ -18,17 +16,17 @@ def render_login_form():
     if 'auth_state' not in st.session_state:
         st.session_state.auth_state = 'login'  # Options: login, signup, reset_request, reset_password
     
-    # Check for logged-in status
+    # Handle logged-in or not status
     if is_logged_in():
         st.sidebar.write(f"Logged in as: {st.session_state.username}")
         if st.sidebar.button("Logout"):
-            logout_user()  # Calls logout_user, which clears session and reruns the app
+            logout_user()  # Calls logout_user which triggers a rerun to the login page
         return True  # The user is logged in
 
-    # Display login/signup form if the user is not logged in
+    # If not logged in, show the login or signup page
     st.sidebar.title("Authentication")
 
-    # Radio button for main auth options
+    # Radio button for main auth options (Login / Sign Up)
     auth_action = st.sidebar.radio("", ["Login", "Sign Up"])
 
     if auth_action == "Login":
@@ -50,7 +48,7 @@ def render_login_form():
                     st.session_state.username = username
                     st.session_state.settings_initialized = False
                     st.success("Successfully logged in!")
-                    st.experimental_rerun()  # Force app rerun after successful login
+                    st.experimental_rerun()  # Rerun the app after login to show logged-in view
                 else:
                     st.error("Invalid username or password")
 
@@ -79,6 +77,7 @@ def render_login_form():
                     st.error("Please fill in all fields")
 
     return False  # User is not logged in yet
+
 
 
 
