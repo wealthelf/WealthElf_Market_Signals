@@ -3,6 +3,13 @@ from utils.settings_manager import load_settings
 from components.auth import render_login_form
 from components.navigation import render_navigation
 
+# Global page configuration (must be the first Streamlit command)
+st.set_page_config(
+    page_title="WealthElf Market Signals",
+    page_icon="attached_assets/9Box favicon.png",
+    layout="wide"
+)
+
 # Custom CSS to set fonts
 custom_css = """
     <style>
@@ -24,13 +31,6 @@ custom_css = """
 """
 # Apply the custom CSS globally
 st.markdown(custom_css, unsafe_allow_html=True)
-
-# Global page configuration (must be the first Streamlit command)
-st.set_page_config(
-    page_title="WealthElf Market Signals",
-    page_icon="attached_assets/9Box favicon.png",
-    layout="wide"
-)
 
 # Initialize authentication state
 if 'auth_state' not in st.session_state:
@@ -76,5 +76,3 @@ else:
         <p>Use the login form in the sidebar to access the application.</p>
     </div>
     """, unsafe_allow_html=True)
-
-
