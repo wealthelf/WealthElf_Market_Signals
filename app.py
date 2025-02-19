@@ -3,41 +3,34 @@ from utils.settings_manager import load_settings
 from components.auth import render_login_form
 from components.navigation import render_navigation
 
+# Custom CSS to set fonts
+custom_css = """
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+        h1 {
+            font-family: 'Helvetica', sans-serif;
+            color: #4CAF50;
+        }
+        h2 {
+            font-family: 'Georgia', serif;
+            color: #555;
+        }
+        .css-1d391kg {
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+"""
+# Apply the custom CSS globally
+st.markdown(custom_css, unsafe_allow_html=True)
+
 # Global page configuration (must be the first Streamlit command)
 st.set_page_config(
     page_title="WealthElf Market Signals",
     page_icon="attached_assets/9Box favicon.png",
     layout="wide"
 )
-
-# Inject Custom CSS for fonts (Place this after `st.set_page_config()`)
-custom_css = """
-    <style>
-        /* Change the font of the entire app */
-        body {
-            font-family: 'Arial', sans-serif; /* Replace with your desired font */
-            font-size: 12px;
-        }
-
-        /* Change the font for the header */
-        h1 {
-            font-family: 'Helvetica', sans-serif;
-            color: #4CAF50; /* Green color for headers */
-        }
-
-        h2 {
-            font-family: 'Georgia', serif;
-            color: #555; /* Gray color for subheaders */
-        }
-
-        /* Change the font for the sidebar */
-        .css-1d391kg {
-            font-family: 'Courier New', monospace;
-        }
-    </style>
-"""
-# Apply the custom CSS
-st.markdown(custom_css, unsafe_allow_html=True)
 
 # Initialize authentication state
 if 'auth_state' not in st.session_state:
@@ -83,3 +76,5 @@ else:
         <p>Use the login form in the sidebar to access the application.</p>
     </div>
     """, unsafe_allow_html=True)
+
+
