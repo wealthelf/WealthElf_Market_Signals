@@ -4,6 +4,10 @@ from utils.auth import (
     create_password_reset_token, reset_password
 )
 
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+
 def render_login_form():
     """Render the login/signup form."""
     # Initialize session state for auth flow
