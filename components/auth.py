@@ -10,7 +10,7 @@ def logout_user():
     for key in list(st.session_state.keys()):
         del st.session_state[key]
     st.session_state.auth_state = 'login'  # Reset to login state
-    st.experimental_rerun()  # Rerun the app to return to the landing page
+    st.experimental_rerun()  # Rerun the app to return to the login screen
 
 def render_login_form():
     """Render the login/signup form."""
@@ -18,63 +18,69 @@ def render_login_form():
     if 'auth_state' not in st.session_state:
         st.session_state.auth_state = "login"  # Options: login, signup, reset_request, reset_password
 
-    if is_logged_in():
+    # Handle logout process
+    if not is_logged_in():
+        # If the user is not logged in, display the login or signup page
+        st.sidebar.title("Authentication")
+        
+        # Radio button for main auth options (Login / Sign Up)
+        auth_action = st.sidebar.radio("", ["Login", "Sign Up"])
+
+        if auth_action == "Login":
+            with st.sidebar.form("login_form"):
+                st.subheader("Login")
+                username = st.text_input("Username")
+                password = st.text_input("Password", type="password")
+
+                col1, col2 = st.columns([1, 1])
+                with col1:
+                    submit = st.form_submit_button("Login")
+                with col2:
+                    forgot_password = st.form_submit_button("Forgot Password?")
+
+                if submit and username and password:
+                    success, user_id = authenticate_user(username, password)
+                    if success:
+                        st.session_state.user_id = user_id
+                        st.session_state.username = username
+                        st.session_state.settings_initialized = False
+                        st.success("Successfully logged in!")
+                        st.experimental_rerun()  # Rerun the app after login
+                    else:
+                        st.error("Invalid username or password")
+
+                if forgot_password:
+                    st.session_state.auth_state = "reset_request"
+                    st.rerun()
+
+        else:  # Sign Up
+            with st.sidebar.form("signup_form"):
+                st.subheader("Sign Up")
+                new_username = st.text_input("Username")
+                new_email = st.text_input("Email")
+                new_password = st.text_input("Password", type="password")
+                confirm_password = st.text_input("Confirm Password", type="password")
+
+                if st.form_submit_button("Sign Up"):
+                    if all([new_username, new_email, new_password, confirm_password]):
+                        if new_password != confirm_password:
+                            st.error("Passwords do not match")
+                        else:
+                            if create_user(new_username, new_password, new_email):
+                                st.success("Account created successfully! Please login.")
+                                st.session_state.auth_state = "login"
+                                st.experimental_rerun()  # Rerun to show login form after signup
+                    else:
+                        st.error("Please fill in all fields")
+
+        return False  # Not logged in yet
+
+    else:
+        # If the user is logged in, show the user info and allow logout
         st.sidebar.write(f"Logged in as: {st.session_state.username}")
         if st.sidebar.button("Logout"):
-            logout_user()  # Calls logout_user which will clear session and rerun the app
-        return True
+            logout_user()  # Calls logout_user, which will clear session and rerun the app
+        return True  # User is logged in
 
-    st.sidebar.title("Authentication")
 
-    # Radio button for main auth options
-    auth_action = st.sidebar.radio("", ["Login", "Sign Up"])
-
-    if auth_action == "Login":
-        with st.sidebar.form("login_form"):
-            st.subheader("Login")
-            username = st.text_input("Username")
-            password = st.text_input("Password", type="password")
-
-            col1, col2 = st.columns([1, 1])
-            with col1:
-                submit = st.form_submit_button("Login")
-            with col2:
-                forgot_password = st.form_submit_button("Forgot Password?")
-
-            if submit and username and password:
-                success, user_id = authenticate_user(username, password)
-                if success:
-                    st.session_state.user_id = user_id
-                    st.session_state.username = username
-                    st.session_state.settings_initialized = False
-                    st.success("Successfully logged in!")
-                    st.rerun()  # Rerun the app to show user is logged in
-                else:
-                    st.error("Invalid username or password")
-
-            if forgot_password:
-                st.session_state.auth_state = "reset_request"
-                st.rerun()
-
-    else:  # Sign Up
-        with st.sidebar.form("signup_form"):
-            st.subheader("Sign Up")
-            new_username = st.text_input("Username")
-            new_email = st.text_input("Email")
-            new_password = st.text_input("Password", type="password")
-            confirm_password = st.text_input("Confirm Password", type="password")
-
-            if st.form_submit_button("Sign Up"):
-                if all([new_username, new_email, new_password, confirm_password]):
-                    if new_password != confirm_password:
-                        st.error("Passwords do not match")
-                    else:
-                        if create_user(new_username, new_password, new_email):
-                            st.success("Account created successfully! Please login.")
-                            st.session_state.auth_state = "login"
-                            st.rerun()  # Rerun to show login form after signup
-                else:
-                    st.error("Please fill in all fields")
-
-    return False
 
