@@ -170,14 +170,11 @@ def display_alerts_page():
                     # Store current filters in session state
                     st.session_state.current_filters = filters
 
-                    sort_by, ascending = render_sort_controls(
-                        df,
-                        default_sort=st.session_state.alerts_settings['sort_by'],
-                        default_ascending=st.session_state.alerts_settings['sort_ascending'],
-                        page_context='alerts'
-                    )
+                    # Get sort column and direction from session state
+                    sort_by = st.session_state.get('sort_by', 'Date')  # Default to 'Date'
+                    ascending = st.session_state.get('sort_ascending', False)  # Default to descending
 
-                    # Apply operations
+                    # Apply sorting and filtering
                     filtered_df = filter_dataframe(df, filters)
                     if sort_by:
                         filtered_df = sort_dataframe(filtered_df, sort_by, ascending)
@@ -207,8 +204,8 @@ def display_alerts_page():
     if 'sort_by' in st.session_state or 'sort_ascending' in st.session_state:
         current_settings = st.session_state.alerts_settings.copy()
         current_settings.update({
-            'sort_by': st.session_state.get('sort_by', ""),
-            'sort_ascending': st.session_state.get('sort_ascending', True)
+            'sort_by': st.session_state.get('sort_by', "Date"),
+            'sort_ascending': st.session_state.get('sort_ascending', False)
         })
         save_settings(current_settings, 'alerts')
 
