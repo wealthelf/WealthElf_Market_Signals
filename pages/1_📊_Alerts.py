@@ -20,11 +20,11 @@ if 'alerts_settings' not in st.session_state:
             'end_col': "D",
             'start_row': 1,
             'end_row': 1000,
-            'sort_by': "",
-            'sort_ascending': True,
+            'sort_by': "Date",
+            'sort_ascending': False,
             'selected_columns': [],
             'filters': {},
-            'max_rows': 200
+            'max_rows': 1000
         }
 
 def process_datetime_columns(df):
