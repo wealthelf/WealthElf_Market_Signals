@@ -59,7 +59,7 @@ def load_settings(page: str = "") -> Dict[str, Any]:
         cursor.execute("""
             SELECT settings
             FROM user_preferences
-            WHERE user_id = %s AND page = %s
+            WHERE user_id = %s AND page = %s::text  -- Casting page to text
         """, (user_id, page))
         result = cursor.fetchone()
 
@@ -75,6 +75,7 @@ def load_settings(page: str = "") -> Dict[str, Any]:
         return defaults
     finally:
         conn.close()
+
 
 def save_settings(settings: Dict[str, Any], page: str = "") -> bool:
     """Save user-specific settings to database."""
