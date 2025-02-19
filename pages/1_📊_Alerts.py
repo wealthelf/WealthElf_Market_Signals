@@ -167,6 +167,7 @@ def display_alerts_page():
                     # Filtering and sorting
                     st.subheader("Data Controls")
                     filters = render_filters(df, page_context='alerts')
+
                     # Store current filters in session state
                     st.session_state.current_filters = filters
 
@@ -174,8 +175,10 @@ def display_alerts_page():
                     sort_by = st.session_state.get('sort_by', 'Date')  # Default to 'Date'
                     ascending = st.session_state.get('sort_ascending', False)  # Default to descending
 
-                    # Apply sorting and filtering
+                    # Apply filtering
                     filtered_df = filter_dataframe(df, filters)
+
+                    # Apply sorting if a sort column is set
                     if sort_by:
                         filtered_df = sort_dataframe(filtered_df, sort_by, ascending)
 
