@@ -56,6 +56,7 @@ def load_settings(page: str = "") -> Dict[str, Any]:
     conn = get_db_connection()
     try:
         cursor = conn.cursor()
+        # Explicitly cast page to text to avoid type mismatch error
         cursor.execute("""
             SELECT settings
             FROM user_preferences
