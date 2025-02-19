@@ -6,16 +6,18 @@ from utils.auth import (
 
 def logout_user():
     """Log out the current user."""
-    # Force the app to rerun to show the landing page first
+    # Clear all session state
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
     st.session_state.auth_state = 'login'  # Reset to login state
-    st.experimental_rerun()  # This reruns the app, redirecting to the login page
+    st.experimental_rerun()  # Force the app to rerun and show the login page
 
 def render_login_form():
     """Render the login/signup form."""
     # Initialize session state for auth flow if not done
     if 'auth_state' not in st.session_state:
         st.session_state.auth_state = 'login'  # Options: login, signup, reset_request, reset_password
-    
+
     # Handle logged-in or not status
     if is_logged_in():
         st.sidebar.write(f"Logged in as: {st.session_state.username}")
@@ -48,7 +50,10 @@ def render_login_form():
                     st.session_state.username = username
                     st.session_state.settings_initialized = False
                     st.success("Successfully logged in!")
-                    st.experimental_rerun()  # Rerun the app after login to show logged-in view
+                    # After login, don't call rerun here, instead change session state and let Streamlit rerun the app naturally
+                    st.session_state.auth_state = 'logged_in'
+                    return True  # User successfully logged in
+
                 else:
                     st.error("Invalid username or password")
 
@@ -77,6 +82,7 @@ def render_login_form():
                     st.error("Please fill in all fields")
 
     return False  # User is not logged in yet
+
 
 
 
