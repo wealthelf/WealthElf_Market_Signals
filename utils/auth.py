@@ -7,6 +7,11 @@ import secrets
 from datetime import datetime, timedelta
 from twilio.rest import Client
 
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+
+
 # Access DATABASE_URL environment variable from Streamlit Cloud secrets
 DATABASE_URL = os.getenv('DATABASE_URL')  # This retrieves the DATABASE_URL set in Streamlit Cloud Secrets
 
