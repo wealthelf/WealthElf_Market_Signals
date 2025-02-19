@@ -14,18 +14,18 @@ st.set_page_config(
 custom_css = """
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Arial', sans-serif; font-size: 12px;
         }
         h1 {
-            font-family: 'Helvetica', sans-serif;
+            font-family: 'Helvetica', sans-serif; font-size: 14px;
             color: #4CAF50;
         }
         h2 {
-            font-family: 'Georgia', serif;
+            font-family: 'Georgia', serif; font-size: 13px;
             color: #555;
         }
         .css-1d391kg {
-            font-family: 'Courier New', monospace;
+            font-family: 'Courier New', font-size: 16px; monospace; 
         }
     </style>
 """
