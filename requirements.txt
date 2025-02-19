@@ -1,0 +1,9 @@
+streamlit==1.42.1
+pandas==2.2.3
+psycopg2-binary==2.9.10
+google-api-python-client==2.161.0
+google-auth==2.38.0
+google-auth-httplib2==0.2.0
+requests==2.32.3
+numpy==2.2.3
+
