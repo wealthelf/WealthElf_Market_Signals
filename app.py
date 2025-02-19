@@ -3,7 +3,14 @@ from utils.settings_manager import load_settings
 from components.auth import render_login_form
 from components.navigation import render_navigation
 
-# Inject Custom CSS for fonts (Place this right after page config)
+# Global page configuration (must be the first Streamlit command)
+st.set_page_config(
+    page_title="WealthElf Market Signals",
+    page_icon="attached_assets/9Box favicon.png",
+    layout="wide"
+)
+
+# Inject Custom CSS for fonts (Place this after `st.set_page_config()`)
 custom_css = """
     <style>
         /* Change the font of the entire app */
@@ -31,13 +38,6 @@ custom_css = """
 """
 # Apply the custom CSS
 st.markdown(custom_css, unsafe_allow_html=True)
-
-# Global page configuration
-st.set_page_config(
-    page_title="WealthElf Market Signals",
-    page_icon="attached_assets/9Box favicon.png",
-    layout="wide"
-)
 
 # Initialize authentication state
 if 'auth_state' not in st.session_state:
