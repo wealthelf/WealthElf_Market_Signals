@@ -1,5 +1,5 @@
 import hashlib
-import os
+import os  # Added to load environment variables
 import streamlit as st
 from typing import Optional, Tuple
 from utils.database import get_db_connection
@@ -7,6 +7,19 @@ import secrets
 from datetime import datetime, timedelta
 from twilio.rest import Client
 
+# Access DATABASE_URL environment variable from Streamlit Cloud secrets
+DATABASE_URL = os.getenv('DATABASE_URL')  # This retrieves the DATABASE_URL set in Streamlit Cloud Secrets
+
+def get_db_connection():
+    """Create a database connection using environment variables."""
+    try:
+        # Using the DATABASE_URL from the environment variable (Streamlit Cloud secrets)
+        conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
+        return conn
+    except Exception as e:
+        raise Exception(f"Database connection error: {str(e)}")
+
+# The rest of your app.py continues without changes below
 def hash_password(password: str) -> str:
     """Hash a password with salt."""
     salt = os.urandom(32)
@@ -76,18 +89,15 @@ def create_password_reset_token(email: str) -> Optional[str]:
     conn = get_db_connection()
     try:
         cursor = conn.cursor()
-        # Find user by email
         cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
         user = cursor.fetchone()
 
         if not user:
             return None
 
-        # Generate a secure token
         token = secrets.token_urlsafe(32)
         expires_at = datetime.now() + timedelta(hours=24)
 
-        # Store token in database
         cursor.execute("""
             INSERT INTO password_reset_tokens 
             (user_id, token, expires_at)
@@ -131,7 +141,6 @@ def reset_password(token: str, new_password: str) -> bool:
             return False
 
         cursor = conn.cursor()
-        # Update password
         hashed_password = hash_password(new_password)
         cursor.execute("""
             UPDATE users 
@@ -139,7 +148,6 @@ def reset_password(token: str, new_password: str) -> bool:
             WHERE id = %s
         """, (hashed_password, user_id))
 
-        # Mark token as used
         cursor.execute("""
             UPDATE password_reset_tokens 
             SET used = TRUE 
