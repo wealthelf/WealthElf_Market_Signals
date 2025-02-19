@@ -4,6 +4,13 @@ from utils.auth import (
     create_password_reset_token, reset_password
 )
 
+def logout_user():
+    """Log out the current user."""
+    # Clear all session state
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.session_state.auth_state = 'login'  # Reset to login state
+    st.experimental_rerun()  # Rerun the app to return to the landing page
 
 def render_login_form():
     """Render the login/signup form."""
@@ -14,8 +21,7 @@ def render_login_form():
     if is_logged_in():
         st.sidebar.write(f"Logged in as: {st.session_state.username}")
         if st.sidebar.button("Logout"):
-            logout_user()
-            st.rerun()
+            logout_user()  # Calls logout_user which will clear session and rerun the app
         return True
 
     st.sidebar.title("Authentication")
@@ -42,7 +48,7 @@ def render_login_form():
                     st.session_state.username = username
                     st.session_state.settings_initialized = False
                     st.success("Successfully logged in!")
-                    st.rerun()
+                    st.rerun()  # Rerun the app to show user is logged in
                 else:
                     st.error("Invalid username or password")
 
@@ -66,8 +72,9 @@ def render_login_form():
                         if create_user(new_username, new_password, new_email):
                             st.success("Account created successfully! Please login.")
                             st.session_state.auth_state = "login"
-                            st.rerun()
+                            st.rerun()  # Rerun to show login form after signup
                 else:
                     st.error("Please fill in all fields")
 
     return False
+
