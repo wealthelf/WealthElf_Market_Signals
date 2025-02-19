@@ -16,7 +16,7 @@ custom_css = """
         /* Change the font of the entire app */
         body {
             font-family: 'Arial', sans-serif; /* Replace with your desired font */
-            font-size: 16px;
+            font-size: 12px;
         }
 
         /* Change the font for the header */
