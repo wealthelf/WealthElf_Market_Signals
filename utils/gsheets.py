@@ -5,25 +5,25 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 import json
-import os
 
 def create_google_service():
-    """Create Google Sheets service with credentials."""
+    """Create Google Sheets service using credentials from Streamlit Secrets."""
     try:
-        # Load credentials from the JSON file
-        cred_path = "attached_assets/replitdataviewer-988b936cfce7.json"
-        if not os.path.exists(cred_path):
-            st.error(f"Credentials file not found at {cred_path}")
+        # Load credentials from Streamlit Secrets
+        if "GOOGLE_CREDENTIALS" not in st.secrets:
+            st.error("Google Sheets credentials not found in Streamlit Secrets.")
             return None
 
-        credentials = Credentials.from_service_account_file(
-            cred_path,
-            scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
+        creds_json = json.loads(st.secrets["GOOGLE_CREDENTIALS"])
+        credentials = Credentials.from_service_account_info(
+            creds_json,
+            scopes=['https://www.googleapis.com/auth/spreadsheets']  # Allow read & write
         )
         service = build('sheets', 'v4', credentials=credentials)
         return service
+
     except Exception as e:
-        st.error(f"Failed to create Google service: {str(e)}")
+        st.error(f"Failed to create Google Sheets service: {str(e)}")
         return None
 
 def get_sample_data():
@@ -56,11 +56,10 @@ def load_sheet_data(spreadsheet_id, range_name):
             sheet_name = range_name.split('!')[0].strip("'")
 
             # Find the specified sheet
-            sheet_found = False
-            for sheet in sheet_metadata.get('sheets', []):
-                if sheet['properties']['title'] == sheet_name:
-                    sheet_found = True
-                    break
+            sheet_found = any(
+                sheet['properties']['title'] == sheet_name
+                for sheet in sheet_metadata.get('sheets', [])
+            )
 
             if not sheet_found:
                 st.error(f"Sheet '{sheet_name}' not found. Using sample data.")
@@ -89,8 +88,8 @@ def load_sheet_data(spreadsheet_id, range_name):
             for col in df.columns:
                 try:
                     df[col] = pd.to_numeric(df[col])
-                except:
-                    continue
+                except ValueError:
+                    continue  # Keep text columns as-is
 
             return df
 
