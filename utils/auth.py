@@ -2,7 +2,7 @@ import hashlib
 import os  # Added to load environment variables
 import streamlit as st
 from typing import Optional, Tuple
-from utils.database import get_db_connection
+
 import secrets
 from datetime import datetime, timedelta
 from twilio.rest import Client
